@@ -1,3 +1,0 @@
-smallbenchnlp/bert-small
-smallbenchnlp/roberta-small
-smallbenchnlp/ELECTRA-DeBERTa-Small
