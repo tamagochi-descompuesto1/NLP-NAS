@@ -19,7 +19,7 @@ def save_models(models: list, model_names: list) -> None:
 
 
 if __name__ == '__main__': 
-    with open('models/models.txt', 'r') as file:
+    with open('models.txt', 'r') as file:
         models = file.read().splitlines()
     file.close()
 
