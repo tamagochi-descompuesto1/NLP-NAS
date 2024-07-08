@@ -19,7 +19,7 @@ def generate_text(input_ids, attention_mask, model, tokenizer, device):
         attention_mask=attention_mask, 
         max_new_tokens=50, 
         num_return_sequences=1, 
-        pad_token_id=tokenizer.eos_token_id
+        pad_token_id=tokenizer.eos_token_id,
     )
 
     return tokenizer.decode(output[0], skip_special_tokens=True)
@@ -51,9 +51,8 @@ models = [distilgpt2_3epochs, distilgpt2_5epochs, distilgpt2_10epochs, distilgpt
 model_names = ['distilgpt2_3epochs', 'distilgpt2_5epochs', 'distilgpt2_10epochs', 'distilgpt2_12epochs', 'distilgpt2_15epochs']
 
 print('Loading tokenizer...')
-tokenizer = GPT2Tokenizer.from_pretrained('distilgpt2')
+tokenizer = GPT2Tokenizer.from_pretrained('distilgpt2', force_download=True, resume_download=None, padding_side='left')
 tokenizer.pad_token = tokenizer.eos_token
-tokenizer.padding_side = 'left'
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f'Device is {device}')
