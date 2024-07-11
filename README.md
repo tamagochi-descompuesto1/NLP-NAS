@@ -129,7 +129,7 @@ TODO CORRECTLY CONFIGURE CUDA, MAY BE DUE TO INCORRECT FLASHING.
 ## Running the scripts.
 To run the scripts related to this project, first clone this repository in the Jetson via `git clone` or by downloading the scripts locally to the device. After cloning the repository activate the conda environment and execute the command `pip3 install -r requirements.txt` to install all the necessary libraries for the scripts to work adequately.
 
-You can donwload and save locally all the models for this project from [Google Drive TODO GDRIVE LINK](GDRIVE). Store the checkpoints in a `models/` folder within the `NLP_NAS/` directory, make sure your project has the structure: 
+You can donwload and save locally all the models for this project from [Google Drive](https://drive.google.com/drive/folders/19PvtjIl1v1U_duQfNzY_2PCgKbKTiPc-?usp=sharing). Store the checkpoints in a `models/` folder within the `NLP_NAS/` directory, make sure your project has the structure: 
 ```
 - NLP-NAS
     - .gitignore
