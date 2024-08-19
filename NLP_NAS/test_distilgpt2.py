@@ -2,6 +2,7 @@ import os
 import torch
 import matplotlib.pyplot as plt
 
+from tqdm import tqdm
 from bert_score import score
 from datasets import load_dataset
 from jtop_stats import jtop_stats
@@ -75,7 +76,7 @@ for index, model in enumerate(models):
     references = []
 
     stats.set_stats()
-    for example in tokenized_test_dataset:
+    for i, example in tqdm(enumerate(tokenized_test_dataset), total=len(tokenized_test_dataset), desc=f'Processing {model_names[index]}'):
         input_ids = example['input_ids'].unsqueeze(0)
         attention_mask = example['attention_mask'].unsqueeze(0)
         generated_text = generate_text(input_ids, attention_mask, model, tokenizer, device)
