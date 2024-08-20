@@ -87,7 +87,7 @@ for index, model in enumerate(models):
             references.append(original_text)
 
     with autocast():
-        P, R, F1 = score(generated_texts, references, lang='en', verbose=True, device=device)
+        P, R, F1 = score(generated_texts, references, lang='en', verbose=True, model_type= 'distilbert-base-uncased', device=device)
     print(f'BERTScore   --- Precision: {P.mean().item()}, Recall: {R.mean().item()}, F1: {F1.mean().item()}')
 
     with open(f'results/{model_names[index]}/metrics_{model_names[index]}.txt', 'w') as file:
