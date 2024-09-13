@@ -1,4 +1,5 @@
 import time
+import numpy as np
 from jtop import jtop
 
 class JtopStats:
@@ -8,6 +9,21 @@ class JtopStats:
         self.cpu = {}
         self.gpu = {}
         self.stats = {}
+        self.time_window = 3 # For smoothing power and GPU stats
+        self.previous_samples = {
+            'power': [],
+            'gpu_load': []
+        }
+        self.deltas_history = []  # To store all intermediate deltas
+        self.stop_thread = False # Flag to stop the delta calculation thread
+
+    def __enter__(self):
+        self.set_stats()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop_thread = True # Ensure the thread is stopped when exiting
+        pass
 
     # Getters for attributes
     def get_power(self) -> dict:
@@ -26,51 +42,53 @@ class JtopStats:
         return self.stats
 
     def __init_time(self, stats: dict) -> dict:
-        stats['time'] = time.time()
+        stats['time'] = time.perf_counter()
         return stats
 
     def __get_stats(self) -> dict:
-        with jtop() as jetson:
-            power = {
-                'voltage_mV': jetson.power['tot']['volt'],
-		        'current_mA': jetson.power['tot']['curr'],
-		        'avg_power_mW': jetson.power['tot']['avg']  
-            }
+        try:
+            with jtop() as jetson:
+                power = jetson.power.get('tot', {})  # Using .get() to avoid KeyError
+                memory = jetson.memory.get('RAM', {})
+                cpu = jetson.cpu.get('total', {})
+                gpu = jetson.gpu.get('ga10b', {})
 
-            memory = {
-                'used_KB': jetson.memory['RAM']['used'],
-                'total_KB': jetson.memory['RAM']['tot'],
-                'free_KB': jetson.memory['RAM']['free'],
-                'cached_KB': jetson.memory['RAM']['cached'],
-                'shared_KB': jetson.memory['RAM']['shared']
-            }
+                if not power or not memory or not cpu or not gpu:
+                    raise ValueError("Incomplete stats retrieved")
 
-            cpu = {
-                'total': {
-                    'user': jetson.cpu['total']['user'],
-                    'nice': jetson.cpu['total']['nice'],
-                    'system': jetson.cpu['total']['system'],
-                    'idle': jetson.cpu['total']['idle'],
-                },
-                'cpus': [{'cpu': index + 1, 'current_freq': cpu['freq']['cur']} for index, cpu in enumerate(jetson.cpu['cpu'])]
-            }
+                stats = {
+                    'power': {
+                        'voltage_mV': power.get('volt', 0),
+                        'current_mA': power.get('curr', 0),
+                        'avg_power_mW': power.get('avg', 0)
+                    },
+                    'memory': {
+                        'used_KB': memory.get('used', 0),
+                        'total_KB': memory.get('tot', 0),
+                        'free_KB': memory.get('free', 0),
+                        'cached_KB': memory.get('cached', 0),
+                        'shared_KB': memory.get('shared', 0)
+                    },
+                    'cpu': {
+                        'user': cpu.get('user', 0),
+                        'nice': cpu.get('nice', 0),
+                        'system': cpu.get('system', 0),
+                        'idle': cpu.get('idle', 0),
+                        'cpus': [{'cpu': index + 1, 'current_freq': cpu_core.get('freq', {}).get('cur', 0)} for index, cpu_core in enumerate(jetson.cpu.get('cpu', []))]
+                    },
+                    'gpu': {
+                        'load': gpu.get('status', {}).get('load', 0),
+                        'min_freq': gpu.get('freq', {}).get('min', 0),
+                        'max_freq': gpu.get('freq', {}).get('max', 0),
+                        'curr_freq': gpu.get('freq', {}).get('cur', 0)
+                    }
+                }
 
-            gpu = {
-                'load': jetson.gpu['ga10b']['status']['load'],
-                'min_freq': jetson.gpu['ga10b']['freq']['min'],
-                'max_freq': jetson.gpu['ga10b']['freq']['max'],
-                'curr_freq': jetson.gpu['ga10b']['freq']['cur']
-            }
-
-            stats = {
-                'power': power,
-                'memory': memory,
-                'cpu': cpu,
-                'gpu': gpu
-            }
-
-            stats = self.__init_time(stats)
-            return stats
+                stats = self.__init_time(stats)
+                return stats
+        except Exception as e:
+            print(f"Error fetching stats: {e}")
+            return {}
 
     def set_stats(self) -> None:
         self.stats = self.__get_stats()
@@ -79,6 +97,16 @@ class JtopStats:
         self.cpu = self.stats['cpu']
         self.gpu = self.stats['gpu']
 
+    def smooth_power(self, samples):
+        window_size = self.time_window
+        smoothed_samples = []
+
+        for i in range(len(samples)):
+            smoothed_samples.append(np.mean(samples[max(0, i - window_size + 1):i + 1]))
+        return smoothed_samples
+
+    def smooth_gpu_load(self, samples):
+        return self.smooth_power(samples)
 
     def __get_deltas(self) -> dict:
         if self.stats == {}:
@@ -87,67 +115,192 @@ class JtopStats:
         current_stats = self.__get_stats()
         deltas = {}
 
-        # Deltas for everything excep cpu and time
-        for key in ['power', 'memory', 'gpu']:
-            deltas[key] = {stat_value: current_stats[key][stat_value] - self.__dict__[key][stat_value] for stat_value in current_stats[key].keys()}
+        # Smooth power and GPU load to avoid spikes
+        self.previous_samples['power'].append(current_stats['power']['avg_power_mW'])
+        self.previous_samples['gpu_load'].append(current_stats['gpu']['load'])
+        smoothed_power = self.smooth_power(self.previous_samples['power'])
+        smoothed_gpu_load = self.smooth_gpu_load(self.previous_samples['gpu_load'])
 
-        # Deltas for cpu
-        deltas['cpu'] = {
-            'total': {
-                'user': current_stats['cpu']['total']['user'] - self.__dict__['cpu']['total']['user'], 
-                'nice': current_stats['cpu']['total']['nice'] - self.__dict__['cpu']['total']['nice'],
-                'system': current_stats['cpu']['total']['system'] - self.__dict__['cpu']['total']['system'],
-                'idle': current_stats['cpu']['total']['idle'] - self.__dict__['cpu']['total']['idle']
-            },
-            'cpus': [{'cpu': index + 1, 'current_freq': current_stats['cpu']['cpus'][index]['current_freq'] - cpu['current_freq']} for index, cpu in enumerate(self.__dict__['cpu']['cpus'])]
+        # Deltas for power, memory, and GPU
+        deltas['power'] = {
+            'voltage_mV': current_stats['power']['voltage_mV'] - self.power['voltage_mV'],
+            'current_mA': current_stats['power']['current_mA'] - self.power['current_mA'],
+            'avg_power_mW': smoothed_power[-1] - self.power['avg_power_mW']
         }
 
+        deltas['memory'] = {key: current_stats['memory'][key] - self.memory[key] for key in current_stats['memory'].keys()}
+
+        deltas['gpu'] = {
+            'load': smoothed_gpu_load[-1] - self.gpu['load'],
+            'curr_freq': current_stats['gpu']['curr_freq'] - self.gpu['curr_freq'],
+        }
+
+        # Per-CPU deltas
+        deltas['cpu'] = {
+            'cpus': []
+        }
+
+        # Iterate through each CPU core and calculate the difference in stats
+        for index, current_cpu in enumerate(current_stats['cpu']['cpus']):
+            previous_cpu = self.cpu['cpus'][index] if index < len(self.cpu['cpus']) else {'current_freq': 0}
+            deltas['cpu']['cpus'].append({
+                'cpu': index + 1,
+                'current_freq': current_cpu['current_freq'] - previous_cpu.get('current_freq', 0)
+            })
+
         # Delta for time
-        deltas['time'] = current_stats['time'] - self.__dict__['stats']['time']
+        deltas['time'] = current_stats['time'] - self.stats['time']
+
+        # Ensure positive deltas where expected
+        deltas = self.ensure_positive_deltas(deltas)
 
         return deltas, current_stats
     
-    def dump_deltas(self, path:str='/') -> None: 
-        deltas, current_stats = self.__get_deltas()
+    def calculate_deltas_periodically(self, interval=1):
+        """
+        Continuously calculate deltas every 'interval' seconds and store them in deltas_history.
+        """
+        self.set_stats()
+        try:
+            while not self.stop_thread:
+                time.sleep(interval)
+                deltas, current_stats = self.__get_deltas()
 
-        with open(path, 'w', encoding='utf-8') as file: 
-            for title, value in {'STARTING STATS': self.stats, 'ENDING STATS': current_stats, 'CONSUMPTION STATS': deltas}.items():
-                file.write('----------------' + title + '----------------' + '\n')
-                if title == 'CONSUMPTION STATS':
-                    file.write('Time:   ' + str(value['time']) + ' seconds\n')
+                if current_stats:  # Proceed only if stats were retrieved successfully
+                    self.deltas_history.append(deltas)
                 else:
-                    file.write('Time:   ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(value['time'])) + '\n')
-                file.write('\n')
+                    print("Warning: Failed to retrieve stats during periodic collection.")
+        except KeyboardInterrupt:
+            print("Periodic delta collection stopped.")
 
-                file.write('POWER:\n')
-                file.write('    - Voltage:        ' +  str(value['power']['voltage_mV']) + ' mV\n')
-                file.write('    - Current:        ' +  str(value['power']['current_mA']) + ' mA\n')
-                file.write('    - Average power:  ' +  str(value['power']['avg_power_mW']) + ' mW\n')
-                file.write('\n')
+    def summarize_deltas(self):
+        summary = {
+            'power': {key: np.mean([delta['power'][key] for delta in self.deltas_history]) for key in self.deltas_history[0]['power'].keys()},
+            'memory': {key: np.mean([delta['memory'][key] for delta in self.deltas_history]) for key in self.deltas_history[0]['memory'].keys()},
+            'gpu': {key: np.mean([delta['gpu'][key] for delta in self.deltas_history]) for key in self.deltas_history[0]['gpu'].keys()},
+            'cpu': {
+                'cpus': []
+            },
+            'time': np.sum([delta['time'] for delta in self.deltas_history])
+        }
 
-                file.write('MEMORY:\n')
-                file.write('    - Used RAM:          ' +  str(value['memory']['used_KB']) + ' KB\n')
-                file.write('    - Total RAM:         ' +  str(value['memory']['total_KB']) + ' KB\n')
-                file.write('    - Free RAM:          ' +  str(value['memory']['free_KB']) + ' KB\n')
-                file.write('    - Cached RAM:        ' +  str(value['memory']['cached_KB']) + ' KB\n')
-                file.write('    - Shared RAM:        ' + str(value['memory']['shared_KB']) + ' KB\n')
-                file.write('\n')
+        # Summarize CPU deltas for each core
+        num_cpus = len(self.deltas_history[0]['cpu']['cpus'])
+        for i in range(num_cpus):
+            avg_freq_delta = np.mean([delta['cpu']['cpus'][i]['current_freq'] for delta in self.deltas_history])
+            summary['cpu']['cpus'].append({
+                'cpu': i + 1,
+                'current_freq': avg_freq_delta
+            })
 
-                file.write('CPU:\n')
-                file.write('    - Total CPU stats:\n')
-                file.write('        + User utilization:   ' + str(value['cpu']['total']['user']) + '\n')
-                file.write('        + Nice utilization:   ' + str(value['cpu']['total']['nice']) + '\n')
-                file.write('        + System utilization: ' + str(value['cpu']['total']['system']) + '\n')
-                file.write('        + Idle utilization:   ' + str(value['cpu']['total']['idle']) + '\n')
-                for cpu in value['cpu']['cpus']:
-                    file.write('    - CPU ' + str(cpu['cpu']) + ' frequency:   ' + str(cpu['current_freq']) + ' kHz\n')
-                file.write('\n')
+        return summary
 
-                file.write('GPU:\n')
-                file.write('    - GPU load:                  ' +  str(value['gpu']['load']) + '\n')
-                file.write('    - Minimum frequency:         ' +  str(value['gpu']['min_freq']) + ' kHz\n')
-                file.write('    - Maximum frequency:         ' + str(value['gpu']['max_freq']) + ' kHz\n')
-                file.write('    - Current frequency:         ' +  str(value['gpu']['curr_freq']) + ' kHz\n')
-                file.write('\n')
+    
+    def ensure_positive_deltas(self, deltas):
+        for key in deltas:
+            if isinstance(deltas[key], dict):
+                # Handle dictionaries
+                for stat, value in deltas[key].items():
+                    if isinstance(value, list):
+                        # If the value is a list (like 'cpu' core stats), iterate through each item
+                        for item in value:
+                            if isinstance(item, dict):  # Handle the case for lists of dictionaries (like 'cpu')
+                                for k, v in item.items():
+                                    if isinstance(v, (int, float)) and v < 0:
+                                        item[k] = 0
+                            elif isinstance(item, (int, float)) and item < 0:
+                                item = 0
+                    elif isinstance(value, (int, float)) and value < 0:
+                        deltas[key][stat] = 0  # Set to 0 if negative
+            elif isinstance(deltas[key], (int, float)):
+                # Handle floats and integers
+                if deltas[key] < 0:
+                    deltas[key] = 0  # Set to 0 if negative
+        return deltas
 
-        file.close()
+
+    
+    def dump_power(self, file, value):
+        file.write('POWER:\n')
+        file.write('    - Voltage:        ' +  str(value['power']['voltage_mV']) + ' mV\n')
+        file.write('    - Current:        ' +  str(value['power']['current_mA']) + ' mA\n')
+        file.write('    - Average power:  ' +  str(value['power']['avg_power_mW']) + ' mW\n')
+        file.write('\n')
+
+    def dump_memory(self, file, value):
+        file.write('MEMORY:\n')
+        file.write('    - Used RAM:          ' +  str(value['memory']['used_KB']) + ' KB\n')
+        file.write('    - Total RAM:         ' +  str(value['memory']['total_KB']) + ' KB\n')
+        file.write('    - Free RAM:          ' +  str(value['memory']['free_KB']) + ' KB\n')
+        file.write('    - Cached RAM:        ' +  str(value['memory']['cached_KB']) + ' KB\n')
+        file.write('    - Shared RAM:        ' + str(value['memory']['shared_KB']) + ' KB\n')
+        file.write('\n')
+
+    def dump_cpu(self, file, value):
+        file.write('CPU:\n')
+        file.write('    - Total CPU stats:\n')
+        
+        # Use .get() to provide a default value of 0 if the key is missing
+        file.write('        + User utilization:   ' + str(value['cpu'].get('user', 0)) + '\n')
+        file.write('        + Nice utilization:   ' + str(value['cpu'].get('nice', 0)) + '\n')
+        file.write('        + System utilization: ' + str(value['cpu'].get('system', 0)) + '\n')
+        file.write('        + Idle utilization:   ' + str(value['cpu'].get('idle', 0)) + '\n')
+        
+        # Handle each CPU core stats
+        for cpu in value['cpu']['cpus']:
+            file.write('    - CPU ' + str(cpu['cpu']) + ' frequency:   ' + str(cpu['current_freq']) + ' kHz\n')
+        file.write('\n')
+
+
+    def dump_gpu(self, file, value):
+        file.write('GPU:\n')
+        file.write('    - GPU load:                  ' +  str(value['gpu']['load']) + '\n')
+        file.write('    - Minimum frequency:         ' +  str(value['gpu']['min_freq']) + ' kHz\n')
+        file.write('    - Maximum frequency:         ' + str(value['gpu']['max_freq']) + ' kHz\n')
+        file.write('    - Current frequency:         ' +  str(value['gpu']['curr_freq']) + ' kHz\n')
+        file.write('\n')
+
+    def dump_deltas(self, report_path: str = '/', raw_data_path: str = '/') -> None:
+        deltas, current_stats = self.__get_deltas()
+        final_stats = self.summarize_deltas()
+
+        # Writing the report
+        with open(report_path, 'w', encoding='utf-8') as report_file:
+            for title, value in {'STARTING STATS': self.stats, 'ENDING STATS': current_stats, 'CONSUMPTION STATS': final_stats}.items():
+                report_file.write('----------------' + title + '----------------' + '\n')
+                if title == 'CONSUMPTION STATS':
+                    report_file.write('Total Time:   ' + str(value['time']) + ' seconds\n')
+                else:
+                    report_file.write('Time:   ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(value['time'])) + '\n')
+                report_file.write('\n')
+
+                self.dump_power(report_file, value)
+                self.dump_memory(report_file, value)
+                self.dump_cpu(report_file, value)
+                self.dump_gpu(report_file, value)
+        report_file.close()
+
+        # Writing the raw data for final deltas
+        with open(raw_data_path, 'w', encoding='utf-8') as raw_file:
+            raw_file.write(f"Time_delta: {final_stats['time']}\n")
+            raw_file.write(f"Power_voltage_mV_delta: {final_stats['power']['voltage_mV']}\n")
+            raw_file.write(f"Power_current_mA_delta: {final_stats['power']['current_mA']}\n")
+            raw_file.write(f"Power_avg_power_mW_delta: {final_stats['power']['avg_power_mW']}\n")
+            
+            raw_file.write(f"Memory_used_KB_delta: {final_stats['memory']['used_KB']}\n")
+            raw_file.write(f"Memory_total_KB_delta: {final_stats['memory']['total_KB']}\n")
+            raw_file.write(f"Memory_free_KB_delta: {final_stats['memory']['free_KB']}\n")
+            raw_file.write(f"Memory_cached_KB_delta: {final_stats['memory']['cached_KB']}\n")
+            raw_file.write(f"Memory_shared_KB_delta: {final_stats['memory']['shared_KB']}\n")
+            
+            raw_file.write(f"GPU_load_delta: {final_stats['gpu']['load']}\n")
+            raw_file.write(f"GPU_curr_freq_delta: {final_stats['gpu']['curr_freq']}\n")
+
+            raw_file.write(f"CPU_user_delta: {final_stats['cpu']['user']}\n")
+            raw_file.write(f"CPU_nice_delta: {final_stats['cpu']['nice']}\n")
+            raw_file.write(f"CPU_system_delta: {final_stats['cpu']['system']}\n")
+            raw_file.write(f"CPU_idle_delta: {final_stats['cpu']['idle']}\n")
+
+            for cpu in final_stats['cpu']['cpus']:
+                raw_file.write(f"CPU{cpu['cpu']}_current_freq_delta: {cpu['current_freq']}\n")
+        raw_file.close()
