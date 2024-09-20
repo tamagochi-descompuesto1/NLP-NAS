@@ -132,6 +132,8 @@ class JtopStats:
 
         deltas['gpu'] = {
             'load': smoothed_gpu_load[-1] - self.gpu['load'],
+            'min_freq': current_stats['gpu']['min_freq'] - self.gpu['min_freq'],
+            'max_freq': current_stats['gpu']['max_freq'] - self.gpu['max_freq'],
             'curr_freq': current_stats['gpu']['curr_freq'] - self.gpu['curr_freq'],
         }
 
@@ -149,7 +151,7 @@ class JtopStats:
             })
 
         # Delta for time
-        deltas['time'] = current_stats['time'] - self.stats['time']
+        #deltas['time'] = current_stats['time'] - self.stats['time']
 
         # Ensure positive deltas where expected
         deltas = self.ensure_positive_deltas(deltas)
@@ -181,7 +183,7 @@ class JtopStats:
             'cpu': {
                 'cpus': []
             },
-            'time': np.sum([delta['time'] for delta in self.deltas_history])
+            'time': time.perf_counter() - self.stats['time']
         }
 
         # Summarize CPU deltas for each core
@@ -295,11 +297,6 @@ class JtopStats:
             
             raw_file.write(f"GPU_load_delta: {final_stats['gpu']['load']}\n")
             raw_file.write(f"GPU_curr_freq_delta: {final_stats['gpu']['curr_freq']}\n")
-
-            raw_file.write(f"CPU_user_delta: {final_stats['cpu']['user']}\n")
-            raw_file.write(f"CPU_nice_delta: {final_stats['cpu']['nice']}\n")
-            raw_file.write(f"CPU_system_delta: {final_stats['cpu']['system']}\n")
-            raw_file.write(f"CPU_idle_delta: {final_stats['cpu']['idle']}\n")
 
             for cpu in final_stats['cpu']['cpus']:
                 raw_file.write(f"CPU{cpu['cpu']}_current_freq_delta: {cpu['current_freq']}\n")
