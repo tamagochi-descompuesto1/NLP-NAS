@@ -130,106 +130,6 @@ def read_metrics_from_file(file_path, bleu_array, gleu_array, meteor_array, roug
             rouge2_array.append(float(lines[4].strip()))
             rougeL_array.append(float(lines[5].strip()))
 
-# Function to read raw data into a DataFrame and tag with model name
-def read_raw_data(file_path, model_name):
-    data = {}
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
-        for line in lines:
-            key, value = line.strip().split(": ")
-            data[key] = float(value)
-    df = pd.DataFrame([data])
-    df['model'] = model_name  # Add the model name as a column
-    return df
-
-# Load the raw data for all models
-def load_data_for_all_models(model_names, base_dir):
-    all_data = []
-    for model_name in model_names:
-        raw_data_path = os.path.join(base_dir, model_name, f'{model_name}_raw.txt')
-        df = read_raw_data(raw_data_path, model_name)
-        all_data.append(df)
-    return pd.concat(all_data, ignore_index=True)
-
-# Plot with shaded confidence interval (line plot with variance)
-def plot_with_confidence(df, metric, title, ylabel):
-    plt.figure(figsize=(10, 6))
-    for model in df['model'].unique():
-        model_df = df[df['model'] == model]
-        plt.plot(model_df.index, model_df[metric], label=model, marker='o')
-        plt.fill_between(model_df.index, model_df[metric] - model_df[metric].std(), 
-                         model_df[metric] + model_df[metric].std(), alpha=0.2)
-    plt.title(title)
-    plt.xlabel('Time Steps')
-    plt.ylabel(ylabel)
-    plt.legend()
-    plt.grid(True)
-    plt.show()
-
-# Box plot to show the distribution of values across models
-def plot_boxplot(df, metric, title, ylabel):
-    plt.figure(figsize=(10, 6))
-    sns.boxplot(x='model', y=metric, data=df)
-    plt.title(title)
-    plt.ylabel(ylabel)
-    plt.grid(True)
-    plt.show()
-
-# Heatmap for model vs metric performance
-def plot_heatmap(df, title):
-    metrics = ['Power_voltage_mV_delta', 'Power_current_mA_delta', 'Power_avg_power_mW_delta',
-               'Memory_used_KB_delta', 'GPU_load_delta', 'CPU_user_delta', 'CPU_system_delta']
-    pivot_df = df.groupby('model')[metrics].mean()
-    plt.figure(figsize=(12, 8))
-    sns.heatmap(pivot_df, annot=True, cmap="YlGnBu", linewidths=.5)
-    plt.title(title)
-    plt.show()
-
-# Correlation matrix of metrics
-def plot_correlation_matrix(df):
-    metrics = ['Power_voltage_mV_delta', 'Power_current_mA_delta', 'Power_avg_power_mW_delta',
-               'Memory_used_KB_delta', 'GPU_load_delta', 'CPU_user_delta', 'CPU_system_delta']
-    corr_matrix = df[metrics].corr()
-    plt.figure(figsize=(10, 6))
-    sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", linewidths=.5)
-    plt.title('Correlation Matrix of Metrics')
-    plt.show()
-
-# Calculate peak, average, and total metrics
-def calculate_performance_metrics(df):
-    summary = df.groupby('model').agg({
-        'Power_avg_power_mW_delta': ['mean', 'max'],
-        'Memory_used_KB_delta': ['mean', 'max'],
-        'GPU_load_delta': ['mean', 'max'],
-        'CPU_user_delta': ['mean', 'max']
-    })
-    print("Performance Metrics Summary:")
-    print(summary)
-
-# Main function to load data and plot comparisons
-def compare_models(model_names, base_dir):
-    # Load data from all models
-    df = load_data_for_all_models(model_names, base_dir)
-
-    # Plot line charts with confidence intervals
-    plot_with_confidence(df, 'Power_avg_power_mW_delta', 'Average Power Consumption with Variance', 'Power (mW)')
-    plot_with_confidence(df, 'Memory_used_KB_delta', 'Memory Usage with Variance', 'Memory Used (KB)')
-    plot_with_confidence(df, 'GPU_load_delta', 'GPU Load with Variance', 'GPU Load')
-    plot_with_confidence(df, 'CPU_user_delta', 'CPU User Utilization with Variance', 'CPU User (%)')
-
-    # Boxplots to visualize distribution across models
-    plot_boxplot(df, 'Power_avg_power_mW_delta', 'Distribution of Average Power by Model', 'Power (mW)')
-    plot_boxplot(df, 'Memory_used_KB_delta', 'Distribution of Memory Used by Model', 'Memory Used (KB)')
-    
-    # Heatmap of model vs performance metrics
-    plot_heatmap(df, 'Model vs Performance Metrics')
-
-    # Correlation matrix for metrics
-    plot_correlation_matrix(df)
-
-    # Calculate peak, average, and total performance metrics
-    calculate_performance_metrics(df)
-
 # Load models
 print('Loading models...')
 model_paths = [
@@ -388,7 +288,5 @@ plt.title('Epochs vs ROUGE-L')
 plt.grid(True)
 plt.savefig(os.path.join(plot_dir, 'epochs_vs_rougeL.png'))
 plt.show()
-
-compare_models(model_names, raw_data_dir)
 
 print('Plotting completed!')
