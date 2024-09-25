@@ -41,6 +41,8 @@ The flasing process should take around 15 to 20 minutes. When finished, disconne
 
 Leave the SDK Manager software as it is and continue with the system configuration of the Jetson, select a username, password and all the initial configurations. After this come back to SDK Manager and finish installing all the Jetson and NVIDIA libraries, for this you will need to input your username, password and IP address (which you can find in the terminal executing the command `ifconfig`). Installation takes around 20 minutes, after this the Jetson device is ready to use.
 
+Another more feasible option is to use balenaEtcher to flash the microSD card. Refer to [this tutorial](https://developer.nvidia.com/embedded/learn/get-started-jetson-orin-nano-devkit#write) to follow the process of flashing using this software.
+
 ## Setting up the environment.
 If the Jetson correctly booted up, it will ask for the configurations. Choose a user, password and necessary configurations to initialize the OS. Remember the Jetson Orin Nano does not have a WiFi module, thus it is necessary to connect it to a router or modem via ethernet cable. 
 
@@ -71,17 +73,17 @@ bash Archiconda3-0.2.3-Linux-aarch64.sh
 
 This two commands will download and install the Archiconda software. Agree to the terms and services of Archiconda and choose the default options. If you get an error prompt indicating that `Archiconda3-0.2.3-Linux-aarch64.sh` does not exists then execute `bash archiconda.sh` to initialize configuration. 
 
-Sometimes Archiconda is already installed by just executing the `wget` command. In this case just execute the commands:
+Sometimes Archiconda is already installed by just executing the `wget` command. In this case just execute the commands (replace the values in the brackets with your Linux username):
  ```shell
  sudo ln -s /home/[username]/archiconda3/etc/profile.d/conda.sh /etc/profile.d/conda.sh
  echo ". /home/[username]/archiconda3/etc/profile.d/conda.sh" >> ~/.bashrc
+source ~/.bashrc
  ```
 
 To add conda to the path. After this you should be able to create anaconda environments without any problem.
 
-Then, to configure it and create and environment execute:
+Then, to configure and create an environment execute:
 ```shell
-conda init
 conda create -n nlp-nas
 ```
 
@@ -93,7 +95,7 @@ sudo -H pip3 install --no-cache-dir jetson-stats
 sudo apt-get install libopenblas-base libopenmpi-dev libomp-dev
 ```
 
-This will install and configure some necessary libraries for correct script execution. After this it is necessary to configure and install a custom PyTorch version for this device. For this we need to upgrade the Python version from 3.6 to 3.8 using the folloewing commands:
+This will install and configure some necessary libraries for correct script execution. After this it is necessary to configure and install a custom PyTorch version for this device. For this we need to upgrade the Python version from to Python 3.8 (check your current version using the `python --version`command, if version is already 3.8 then skip this part) using the following commands:
 ```shell
 sudo apt update -y
 sudo apt install python3.8
@@ -122,12 +124,17 @@ To test the correct PyTorch installation execute:
 ```shell
 python3 -c 'import torch;print(torch.cuda.is_available())'
 ```
-This should return `True` indicating that GPU is available for use. For further PyTorch installation configurations you can refer to the [official NVIDIA tutorial](https://docs.nvidia.com/deeplearning/frameworks/install-pytorch-jetson-platform/index.html). 
-
-TODO CORRECTLY CONFIGURE CUDA, MAY BE DUE TO INCORRECT FLASHING.
+This should return `True` indicating that GPU is available for use. For further PyTorch installation configurations you can refer to the [official NVIDIA tutorial](https://docs.nvidia.com/deeplearning/frameworks/install-pytorch-jetson-platform/index.html).
 
 ## Running the scripts.
-To run the scripts related to this project, first clone this repository in the Jetson via `git clone` or by downloading the scripts locally to the device. After cloning the repository activate the conda environment and execute the command `pip3 install -r requirements.txt` to install all the necessary libraries for the scripts to work adequately.
+To run the scripts related to this project, first clone this repository in the Jetson via `git clone` or by downloading the scripts locally to the device. After cloning the repository activate the conda environment and execute the command `pip3 install -r requirements.txt` to install all the necessary libraries for the scripts to work adequately. Some necessary libraries need to be installed separately, execute the following commands to finsh installing the libraries:
+```shell
+pip install nvidia-pyindex
+pip install graphsurgeon
+pip install onnx-graphsurgeon
+pip install nvidia-tensorrt
+pip install uff
+```
 
 You can donwload and save locally all the models for this project from [Google Drive](https://drive.google.com/drive/folders/19PvtjIl1v1U_duQfNzY_2PCgKbKTiPc-?usp=sharing). Store the checkpoints in a `models/` folder within the `NLP_NAS/` directory, make sure your project has the structure: 
 ```
@@ -149,18 +156,18 @@ You can donwload and save locally all the models for this project from [Google D
                 - variant 2 of the main model
                 - ...
             - ...
+        - jtop_stats_test.py
         - jtop_test.py
         - model_loader.py
-        - test_distilgpt2.py
         - models.txt
+        - plot_distilgpt2.py
         - requirements.txt
+        - test_distilgpt2.py
 ```
  Thus, the models folder is composed of $n$ folders which correspond to each individual model selected and this folders store different variants of the model (trained with different datasets, epochs, etc.). Then you can execute any `python3 test_[model_name].py` command to test the selected model and analyze the resources each model consumes. 
 
 Additionally, you can download untrained models located in the `models.txt` file into a previously cretated `models/` folder. You can modify this file to add as many Hugging Face models as you want but be aware that the scripts and hardware may not be adapted to them and might not work as expected. This option is also not recommended since hardware results and benchmark scores will differ from the expected results.
 
-When a `test_[model_name].py` file is executed all variants of the model will be loaded and tested over their corresponding datasets. After completing the test a file will be created within the `/stat_dumps/[model_name]/[model_variant]` with the name `[model_variant]-test-[year]-[month]-[day]_[hour]-[minute]-[second].txt` which will store all the hardware stats related to the execution of that model at that given time. For example, if y execute the `distilgpt2` model with `python3 test_distilgpt2.py` at 05/06/2024 16:44:23, then the resulting file for the a variant that was trained for 3 epochs will be `distilgpt2-test-2024-05-06_16-44-23.txt`.
+When a `test_[model_name].py` file is executed all variants of the model will be loaded and tested over their corresponding datasets. After completing the test two files will be created within the `/stat_dumps/[model_name]/[model_variant]` with the name `[model_variant].txt` and `[model_variant]_raw.txt`. The first file contains a report with the hardware metrics and latency at the start and end of the experiment and also a section of consumption stats that stores the average variatons each hardware component presented durng experimentation. The second fle contains the raw values for each hardware component for plotting.
 
-This file contains various hardware statistics. It divides in three parts: the hardware stats before the execution of the model, the hardware stats after the execution of the model and the difference (substraction) of this two metrics. They can give a good overview about how each model works and how much resources they consume.
-
-Also, within the results folder many plots related to the model's performance will be created. Each plot will be stored in '/results/[model_name]/[model_variant]' for further analysis. These graphics describe the performance of each model during testing, including precission, recall and F1 scores.
+Also, within the results folder many plots related to the model's performance will be created and showed when the script ends. Each plot will be stored in '/results/[model_name]/pots' for further analysis. These graphics describe the performance of each model during testing, includng benchmarks (BEU, GLEU, METEOR and ROUGE) and hardware metrics. In this same folder each model variant has its own subfolder which stores a `metrics_[model_variant].txt` fiile that contains a the benchmark scores of the model for plotting. The order in which these are sorted is: BLEU, GLEU, METEOR, ROUGE 1, ROUGE 2 and ROUGE L. To generate, visualize and store plots related to hardware performance please run the command `python3 plot_[model_name].py`.
