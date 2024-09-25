@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-import numpy as np
 
 # Ensure the plots directory exists
 plot_dir = 'results/distilgpt2/plots'
@@ -187,12 +186,18 @@ def compare_models_with_time(model_names, base_dir):
     plot_time_vs_load(df, 'time_vs_cpu_gpu_load.png')
 
 
-# Define the models and paths
-model_names = ['distilgpt2_3epochs', 'distilgpt2_5epochs', 'distilgpt2_10epochs', 'distilgpt2_12epochs', 'distilgpt2_15epochs']
-raw_data_dir = 'stat_dumps/distilgpt2'  # Update with your actual base directory
+# Check if plot normal models or trt models
+model_type = input('Choose either "normal" or "trt" model to plot: ')
 
-# Run comparison
-compare_models(model_names, raw_data_dir)
+if(model_type != 'normal' and model_type != 'trt'):
+    print('Error, you must choose between the normal and trt model.')
+else: 
+    # Define the models and paths
+    model_names = ['distilgpt2_3epochs', 'distilgpt2_5epochs', 'distilgpt2_10epochs', 'distilgpt2_12epochs', 'distilgpt2_15epochs'] if model_type == 'normal' else ['distilgpt2_3epochs_trt', 'distilgpt2_5epochs_trt', 'distilgpt2_10epochs_trt', 'distilgpt2_12epochs_trt', 'distilgpt2_15epochs_trt']
+    raw_data_dir = 'stat_dumps/distilgpt2' if model_type == 'normal' else 'stat_dumps/distilgpt2/trt'
 
-# Run comparison with time-related plots
-compare_models_with_time(model_names, raw_data_dir)
+    # Run comparison
+    compare_models(model_names, raw_data_dir)
+
+    # Run comparison with time-related plots
+    compare_models_with_time(model_names, raw_data_dir)
