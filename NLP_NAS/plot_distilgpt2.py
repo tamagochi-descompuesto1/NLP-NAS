@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import scikit_posthocs as sp
 
 # Ensure the plots directory exists
 plot_dir = 'results/distilgpt2/plots'
@@ -37,7 +38,32 @@ def load_data_for_all_models(model_names, base_dir):
         all_data.append(df)
     return pd.concat(all_data, ignore_index=True)
 
-# Plot with shaded confidence interval (line plot with variance)
+# Function to generate Critical Difference (CD) diagram
+def plot_cd_diagram(df, metric, title, plot_filename):
+    # Pivot the DataFrame to get models as columns and each entry as a separate data point
+    pivot_df = df.pivot(columns='model', values=metric)
+
+    # Check if there's any missing data, and fill or drop it
+    pivot_df.dropna(inplace=True)
+
+    # Get rankings (each row is considered a dataset, and each column is a model)
+    rankings = pivot_df.rank(axis=1, method='min')
+
+    # Calculate average rankings for each model
+    avg_rankings = rankings.mean(axis=0).values
+    model_names = rankings.columns
+
+    # Compute Critical Difference and plot the diagram
+    cd = sp.posthoc_nemenyi_friedman(rankings)
+    
+    # Plot the CD diagram using seaborn or matplotlib
+    plt.figure(figsize=(10, 6))
+    sns.heatmap(cd, annot=True, cmap="YlGnBu")
+    plt.title(title)
+    plt.savefig(os.path.join(plot_dir, plot_filename))  # Save the plot
+    plt.show()  # Show the plot
+
+# Function for plotting with confidence intervals
 def plot_with_confidence(df, metric, title, ylabel, plot_filename):
     plt.figure(figsize=(10, 6))
     for model in df['model'].unique():
@@ -53,20 +79,9 @@ def plot_with_confidence(df, metric, title, ylabel, plot_filename):
     plt.savefig(os.path.join(plot_dir, plot_filename))  # Save the plot
     plt.show()  # Show the plot
 
-# Box plot to show the distribution of values across models
-def plot_boxplot(df, metric, title, ylabel, plot_filename):
-    plt.figure(figsize=(10, 6))
-    sns.boxplot(x='model', y=metric, data=df)
-    plt.title(title)
-    plt.ylabel(ylabel)
-    plt.grid(True)
-    plt.savefig(os.path.join(plot_dir, plot_filename))  # Save the plot
-    plt.show()  # Show the plot
-
 # Heatmap for model vs metric performance
 def plot_heatmap(df, title, plot_filename):
-    metrics = ['Power_avg_power_mW_delta',
-               'Memory_used_KB_delta', 'GPU_load_delta', 'CPU_avg_freq_delta']
+    metrics = ['Power_avg_power_mW_delta', 'Memory_used_KB_delta', 'GPU_load_delta', 'CPU_avg_freq_delta']
     pivot_df = df.groupby('model')[metrics].mean()
     plt.figure(figsize=(12, 8))
     sns.heatmap(pivot_df, annot=True, cmap="YlGnBu", linewidths=.5)
@@ -76,8 +91,7 @@ def plot_heatmap(df, title, plot_filename):
 
 # Correlation matrix of metrics
 def plot_correlation_matrix(df, plot_filename):
-    metrics = ['Power_avg_power_mW_delta',
-               'Memory_used_KB_delta', 'GPU_load_delta', 'CPU_avg_freq_delta']
+    metrics = ['Power_avg_power_mW_delta', 'Memory_used_KB_delta', 'GPU_load_delta', 'CPU_avg_freq_delta']
     corr_matrix = df[metrics].corr()
     plt.figure(figsize=(10, 6))
     sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", linewidths=.5)
@@ -95,35 +109,6 @@ def calculate_performance_metrics(df):
     })
     print("Performance Metrics Summary:")
     print(summary)
-
-# Main function to load data and plot comparisons
-def compare_models(model_names, base_dir):
-    # Load data from all models
-    df = load_data_for_all_models(model_names, base_dir)
-    
-    # Compute average CPU frequency delta
-    cpu_freq_cols = [col for col in df.columns if 'CPU' in col and '_current_freq_delta' in col]
-    df['CPU_avg_freq_delta'] = df[cpu_freq_cols].mean(axis=1)
-    
-    # Plot line charts with confidence intervals
-    plot_with_confidence(df, 'Power_avg_power_mW_delta', 'Average Power Consumption with Variance', 'Power (mW)', 'power_consumption_variance.png')
-    plot_with_confidence(df, 'Memory_used_KB_delta', 'Memory Usage with Variance', 'Memory Used (KB)', 'memory_usage_variance.png')
-    plot_with_confidence(df, 'GPU_load_delta', 'GPU Load with Variance', 'GPU Load', 'gpu_load_variance.png')
-    plot_with_confidence(df, 'CPU_avg_freq_delta', 'Average CPU Frequency Delta with Variance', 'CPU Frequency Delta (kHz)', 'cpu_freq_variance.png')
-
-    # Boxplots to visualize distribution across models
-    plot_boxplot(df, 'Power_avg_power_mW_delta', 'Distribution of Average Power by Model', 'Power (mW)', 'boxplot_power.png')
-    plot_boxplot(df, 'Memory_used_KB_delta', 'Distribution of Memory Used by Model', 'Memory Used (KB)', 'boxplot_memory.png')
-    plot_boxplot(df, 'CPU_avg_freq_delta', 'Distribution of Average CPU Frequency Delta by Model', 'CPU Frequency Delta (kHz)', 'boxplot_cpu.png')
-    
-    # Heatmap of model vs performance metrics
-    plot_heatmap(df, 'Model vs Performance Metrics', 'model_performance_heatmap.png')
-
-    # Correlation matrix for metrics
-    plot_correlation_matrix(df, 'correlation_matrix.png')
-
-    # Calculate peak, average, and total performance metrics
-    calculate_performance_metrics(df)
 
 # Plot total time comparison across models
 def plot_total_time(df, plot_filename):
@@ -164,40 +149,64 @@ def plot_time_vs_load(df, plot_filename):
     plt.savefig(os.path.join(plot_dir, plot_filename))  # Save the plot
     plt.show()  # Show the plot
 
-# Main function to load data and plot comparisons, including time-related plots
-def compare_models_with_time(model_names, base_dir):
+# Main function to load data and plot comparisons
+def compare_models_with_cd_and_other_plots(model_names, base_dir):
     # Load data from all models
     df = load_data_for_all_models(model_names, base_dir)
     
     # Compute average CPU frequency delta
     cpu_freq_cols = [col for col in df.columns if 'CPU' in col and '_current_freq_delta' in col]
     df['CPU_avg_freq_delta'] = df[cpu_freq_cols].mean(axis=1)
-    
+
+    # Plot line charts with confidence intervals
+    plot_with_confidence(df, 'Power_avg_power_mW_delta', 'Average Power Consumption with Variance', 'Power (mW)', 'power_consumption_variance.png')
+    plot_with_confidence(df, 'Memory_used_KB_delta', 'Memory Usage with Variance', 'Memory Used (KB)', 'memory_usage_variance.png')
+    plot_with_confidence(df, 'GPU_load_delta', 'GPU Load with Variance', 'GPU Load', 'gpu_load_variance.png')
+    plot_with_confidence(df, 'CPU_avg_freq_delta', 'Average CPU Frequency Delta with Variance', 'CPU Frequency Delta (kHz)', 'cpu_freq_variance.png')
+
+    # Heatmap of model vs performance metrics
+    plot_heatmap(df, 'Model vs Performance Metrics', 'model_performance_heatmap.png')
+
+    # Correlation matrix for metrics
+    plot_correlation_matrix(df, 'correlation_matrix.png')
+
+    # Calculate peak, average, and total performance metrics
+    calculate_performance_metrics(df)
+
     # Plot total time comparison across models
     plot_total_time(df, 'total_time_comparison.png')
-    
+
     # Plot time vs power consumption
     plot_time_vs_metric(df, 'Power_avg_power_mW_delta', 'Time vs Power Consumption', 'Power (mW)', 'time_vs_power.png')
-    
+
     # Plot time vs memory usage
     plot_time_vs_metric(df, 'Memory_used_KB_delta', 'Time vs Memory Usage', 'Memory Used (KB)', 'time_vs_memory.png')
-    
+
     # Plot time vs CPU and GPU load
     plot_time_vs_load(df, 'time_vs_cpu_gpu_load.png')
+
+    # Generate Critical Difference diagram for Power consumption
+    plot_cd_diagram(df, 'Power_avg_power_mW_delta', 'Critical Difference Diagram: Power Consumption', 'cd_power_consumption.png')
+
+    # Generate Critical Difference diagram for Memory usage
+    plot_cd_diagram(df, 'Memory_used_KB_delta', 'Critical Difference Diagram: Memory Usage', 'cd_memory_usage.png')
+
+    # Generate Critical Difference diagram for GPU load
+    plot_cd_diagram(df, 'GPU_load_delta', 'Critical Difference Diagram: GPU Load', 'cd_gpu_load.png')
+
+    # Generate Critical Difference diagram for CPU Frequency delta
+    plot_cd_diagram(df, 'CPU_avg_freq_delta', 'Critical Difference Diagram: CPU Frequency Delta', 'cd_cpu_freq_delta.png')
 
 
 # Check if plot normal models or trt models
 model_type = input('Choose either "normal" or "trt" model to plot: ')
 
-if(model_type != 'normal' and model_type != 'trt'):
+if model_type not in ['normal', 'trt']:
     print('Error, you must choose between the normal and trt model.')
 else: 
     # Define the models and paths
     model_names = ['distilgpt2_3epochs', 'distilgpt2_5epochs', 'distilgpt2_10epochs', 'distilgpt2_12epochs', 'distilgpt2_15epochs'] if model_type == 'normal' else ['distilgpt2_3epochs_trt', 'distilgpt2_5epochs_trt', 'distilgpt2_10epochs_trt', 'distilgpt2_12epochs_trt', 'distilgpt2_15epochs_trt']
     raw_data_dir = 'stat_dumps/distilgpt2' if model_type == 'normal' else 'stat_dumps/distilgpt2/trt'
 
-    # Run comparison
-    compare_models(model_names, raw_data_dir)
-
-    # Run comparison with time-related plots
-    compare_models_with_time(model_names, raw_data_dir)
+    # Run comparison with CD diagrams and other plots
+    compare_models_with_cd_and_other_plots(model_names, raw_data_dir)
