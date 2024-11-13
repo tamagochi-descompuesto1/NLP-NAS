@@ -1,4 +1,5 @@
 import os
+import time
 import nltk
 import torch
 import numpy as np
@@ -195,7 +196,7 @@ for index, model in enumerate(models):
     print(f'Model {model_names[index]} --- BLEU: {avg_bleu:.4f}, GLEU: {avg_gleu:.4f}, METEOR: {avg_meteor:.4f}, ROUGE-1: {avg_rouge1:.4f}, ROUGE-2: {avg_rouge2:.4f}, ROUGE-L: {avg_rougeL:.4f}')
 
     # Save metrics to file
-    metrics_file_path = f'results/distilgpt2/{model_names[index]}/metrics_{model_names[index]}.txt'
+    metrics_file_path = f'results/distilgpt2/{model_names[index]}/metrics_{model_names[index]}_{time.time()}.txt'
     with open(metrics_file_path, 'w') as file:
         file.write(f"{avg_bleu}\n{avg_gleu}\n{avg_meteor}\n{avg_rouge1}\n{avg_rouge2}\n{avg_rougeL}\n")
 

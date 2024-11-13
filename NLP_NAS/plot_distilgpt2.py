@@ -41,24 +41,29 @@ def load_data_for_all_models(model_names, base_dir):
         all_data.append(df)
     return pd.concat(all_data, ignore_index=True)
 
-# Plot with shaded confidence interval (line plot with variance)
-def plot_with_confidence(df, metric, title, ylabel, plot_filename):
-    plt.figure(figsize=(10, 6))
+# Define the function to normalize and plot all metrics in a single grouped bar plot
+def plot_normalized_grouped_bars(df, metrics, plot_filename):
+    # Select the necessary columns (model and the metrics of interest)
+    df_grouped = df[['model'] + metrics]
     
-    # Use the model column as a hue to apply colors and set legend to False
-    sns.barplot(x='model', y=metric, hue='model', data=df, palette=palette, dodge=False)
+    # Normalize each metric to a 0-1 range
+    scaler = MinMaxScaler()
+    df_grouped[metrics] = scaler.fit_transform(df_grouped[metrics])
+
+    # Melt the DataFrame to have a long format suitable for a grouped bar plot
+    df_melted = df_grouped.melt(id_vars='model', var_name='Metric', value_name='Normalized Value')
     
-    plt.title(title)
-    plt.ylabel(ylabel)
+    plt.figure(figsize=(12, 6))
+    sns.barplot(x='model', y='Normalized Value', hue='Metric', data=df_melted, palette='Set2')
+    
+    plt.title('Normalized Comparison of Models Across Metrics')
     plt.xlabel('Model')
+    plt.ylabel('Normalized Metric Value (0-1)')
+    plt.grid(True, axis='y', linestyle='--')
     
-    plt.grid(True, axis='y', linestyle='--')  # Enable grid for only the y-axis with dashed lines
-    
-    # Adjust axis ticks to match bar positions, if you still want a background grid
-    # plt.grid(True, axis='y', linestyle='--')
-    
-    plt.savefig(os.path.join(plot_dir, plot_filename))  # Save the plot
-    plt.show()  # Show the plot
+    # Save and show the plot
+    plt.savefig(os.path.join(plot_dir, plot_filename))
+    plt.show()
 
 # Heatmap for model vs metric performance
 def plot_heatmap(df, title, plot_filename):
@@ -227,11 +232,28 @@ def compare_models_with_all_plots(model_names, base_dir):
     # Plot time vs CPU and GPU load
     plot_time_vs_load(df, 'time_vs_cpu_gpu_load.png')
 
-    # Plot confidence intervals
-    plot_with_confidence(df, 'Power_avg_power_mW_delta', 'Average Power Consumption with Variance', 'Power (mW)', 'power_consumption_variance.png')
-    plot_with_confidence(df, 'Memory_used_KB_delta', 'Memory Usage with Variance', 'Memory Used (KB)', 'memory_usage_variance.png')
-    plot_with_confidence(df, 'GPU_load_delta', 'GPU Load with Variance', 'GPU Load', 'gpu_load_variance.png')
-    plot_with_confidence(df, 'CPU_avg_freq_delta', 'Average CPU Frequency Delta with Variance', 'CPU Frequency Delta (kHz)', 'cpu_freq_variance.png')
+    # Define metrics, titles, and ylabels for the combined bar plots
+    metrics = [
+        'Power_avg_power_mW_delta',
+        'Memory_used_KB_delta',
+        'GPU_load_delta',
+        'CPU_avg_freq_delta'
+    ]
+    titles = [
+        'Average Power Consumption with Variance',
+        'Memory Usage with Variance',
+        'GPU Load with Variance',
+        'Average CPU Frequency Delta with Variance'
+    ]
+    ylabels = [
+        'Power (mW)',
+        'Memory Used (KB)',
+        'GPU Load',
+        'CPU Frequency Delta (kHz)'
+    ]
+
+    # Bar plots
+    plot_normalized_grouped_bars(df, metrics, 'normalized_grouped_bar_plot.png')
    
     # Heatmap of model vs performance metrics
     plot_heatmap(df, 'Model vs Performance Metrics', 'model_performance_heatmap.png')
