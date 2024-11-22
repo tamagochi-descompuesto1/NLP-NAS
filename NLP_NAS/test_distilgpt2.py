@@ -3,8 +3,6 @@ import time
 import nltk
 import torch
 import numpy as np
-import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 from tqdm import tqdm
@@ -21,10 +19,6 @@ from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('punkt_tab')
-
-def cut_text_for_generation(text, cut_percentage=0.3):
-    cut_point = int(len(text) * (1 - cut_percentage))
-    return text[:cut_point], text[cut_point:]
 
 def generate_texts(dataset, model, tokenizer, device):
     generated_texts = []
