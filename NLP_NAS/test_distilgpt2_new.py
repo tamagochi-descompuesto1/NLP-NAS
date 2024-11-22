@@ -27,7 +27,7 @@ def cut_text_for_generation(text, cut_percentage=0.3):
     cut_point = int(len(text) * (1 - cut_percentage))
     return text[:cut_point], text[cut_point:]
 
-def generate_text(input_ids, attention_mask, model, tokenizer):
+def generate_text(input_ids, attention_mask, model, tokenizer, temperature=1, top_k=None, top_p=1):
     # Ensure input_ids and attention_mask have compatible dimensions
     if input_ids.dim() != attention_mask.dim():
         attention_mask = attention_mask.unsqueeze(0)  # Adjust dimensions if necessary
@@ -39,10 +39,13 @@ def generate_text(input_ids, attention_mask, model, tokenizer):
             max_new_tokens=50, 
             num_return_sequences=1, 
             pad_token_id=tokenizer.eos_token_id,
+            temperature=temperature,
+            top_k= top_k,
+            top_p=top_p
         )
     return tokenizer.decode(output[0], skip_special_tokens=True)
 
-def generate_texts(dataset, model, tokenizer, device):
+def generate_texts(dataset, model, tokenizer, device, temperature=1, top_k=None, top_p=1):
     generated_texts = []
     references = []
 
@@ -69,7 +72,7 @@ def generate_texts(dataset, model, tokenizer, device):
         # Generate text using the tokenized incomplete_text
         input_ids = input_ids.to(device)
         attention_mask = attention_mask.to(device)
-        generated_text = generate_text(input_ids, attention_mask, model, tokenizer)
+        generated_text = generate_text(input_ids, attention_mask, model, tokenizer, temperature, top_k, top_p)
         
         if generated_text.strip():
             generated_texts.append(generated_text)
@@ -130,23 +133,19 @@ def read_hardware_metrics(file_path):
             metrics[key] = float(value)
     return metrics
 
-def save_hardware_metrics_summary(hardware_metrics, output_file):
-    with open(output_file, 'w') as file:
-        file.write('Hardware Metrics Summary\n')
-        file.write('Metric\tMean\tStd\n')
-        for model_name, metrics_list in hardware_metrics.items():
+def save_hardware_metrics_summary(hardware_metrics, output_dir):
+    for model_name, metrics_list in hardware_metrics.items():
+        raw_data_file = os.path.join(output_dir, model_name, f'{model_name}_raw.txt')
+        with open(raw_data_file, 'w') as file:
             # Combine metrics from all experiments for the model
             aggregated_metrics = {}
             for metrics in metrics_list:
                 for key, value in metrics.items():
                     aggregated_metrics.setdefault(key, []).append(value)
-            
-            # Calculate mean and std for each metric
-            file.write(f'\nModel: {model_name}\n')
             for key, values in aggregated_metrics.items():
                 mean_val = np.mean(values)
-                std_val = np.std(values)
-                file.write(f'{key}\t{mean_val:.4f}\t{std_val:.4f}\n')
+                file.write(f'{key}: {mean_val:.4f}\n')
+            
 
 
 def save_final_metrics(all_metrics, output_dir):
@@ -184,7 +183,7 @@ def plot_metrics(all_metrics, model_names, output_dir):
             metric_values_per_epoch = [
                 all_metrics[model_name][experiment_idx][metric_idx] for model_name in model_names
             ]
-            plt.plot(epochs, metric_values_per_epoch, label=f'Experiment {experiment_idx + 1}', alpha=0.5)
+            plt.plot(epochs, metric_values_per_epoch, alpha=0.5)
 
         # Compute mean and std across experiments for each model
         mean_values = [
@@ -197,7 +196,7 @@ def plot_metrics(all_metrics, model_names, output_dir):
         ]
 
         # Plot mean and standard deviation
-        plt.plot(epochs, mean_values, color='black', label='Mean')
+        plt.plot(epochs, mean_values, color='black')
         plt.fill_between(epochs, np.array(mean_values) - np.array(std_values),
                          np.array(mean_values) + np.array(std_values), color='gray', alpha=0.2)
 
@@ -244,7 +243,7 @@ def perform_statistical_tests_for_hardware_metrics(hardware_metrics):
                 except ValueError:
                     print(f"Skipping {model1} vs {model2}: Not enough paired samples for Wilcoxon test.")
 
-def main(num_experiments, use_small_dataset=False):
+def main(num_experiments, use_small_dataset=False, temperature=1, top_k=None, top_p=1):
     # Load models and tokenizer
     print('Loading models...')
     model_paths = ['models/distilgpt2/distilgpt2_3epochs', 'models/distilgpt2/distilgpt2_5epochs', 
@@ -298,7 +297,7 @@ def main(num_experiments, use_small_dataset=False):
 
                 # Generate texts using GPU
                 print(f'Generating texts for model {name}...')
-                generated_texts, references = generate_texts(tokenized_test_dataset, model, tokenizer, device)
+                generated_texts, references = generate_texts(tokenized_test_dataset, model, tokenizer, device, temperature, top_k, top_p)
 
                 # Save hardware metrics
                 stats.stop_thread = True
@@ -319,7 +318,7 @@ def main(num_experiments, use_small_dataset=False):
     save_final_metrics(all_metrics, 'results/distilgpt2')
 
     # Save hardware metrics
-    save_hardware_metrics_summary(hardware_metrics, 'stat_dumps/distilgpt2/hardware_summary.txt')
+    save_hardware_metrics_summary(hardware_metrics, 'stat_dumps/distilgpt2/')
 
     # Plot metrics
     plot_metrics(all_metrics, model_names, 'results/distilgpt2/plots')
@@ -332,6 +331,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("num_experiments", type=int, help="Number of experiments to run")
     parser.add_argument("--use_small_dataset", type=bool, default=False, help="Wether to use a reduced version of the dataset or not")
+    parser.add_argument("--temp", type=float, default=1.0, help="Sets the temperature for text generation")
+    parser.add_argument("--topk", type=float, default=None, help="Sets the top_k value for text generation")
+    parser.add_argument("--topp", type=float, default=1.0, help="Sets the top_p value for text generation")
     args = parser.parse_args()
 
-    main(args.num_experiments, args.use_small_dataset)
+    main(args.num_experiments, args.use_small_dataset, args.temp, args.topk, args.topp)

@@ -1,8 +1,9 @@
 import os
+import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-import numpy as np
+
 from math import pi
 from pandas.plotting import parallel_coordinates
 from sklearn.preprocessing import MinMaxScaler
