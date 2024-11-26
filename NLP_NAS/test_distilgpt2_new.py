@@ -271,6 +271,8 @@ def main(num_experiments, use_small_dataset=False, temperature=1, top_k=None, to
     
     if(use_small_dataset):
         dataset = dataset.select(range(200))
+    else:
+        dataset = dataset.shuffle(seed=42).select(range(1000))
 
     print('Tokenizing dataset...')
     tokenized_test_dataset = dataset.map(lambda x: tokenize(x, tokenizer=tokenizer), batched=True, remove_columns=['text'])

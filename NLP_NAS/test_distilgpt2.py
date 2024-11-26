@@ -2,25 +2,42 @@ import os
 import time
 import nltk
 import torch
+import argparse
 import numpy as np
-import matplotlib.pyplot as plt
 
 from tqdm import tqdm
 from threading import Thread
-from datasets import load_dataset
+from scipy.stats import wilcoxon
 from jtop_stats import jtop_stats
-from rouge_score import rouge_scorer
-from nltk.tokenize import word_tokenize
-from nltk.translate.gleu_score import sentence_gleu
-from nltk.translate.meteor_score import meteor_score
+from datasets import load_dataset
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
-from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 
 nltk.download('punkt')
 nltk.download('wordnet')
-nltk.download('punkt_tab')
 
-def generate_texts(dataset, model, tokenizer, device):
+def cut_text_for_generation(text, cut_percentage=0.3):
+    cut_point = int(len(text) * (1 - cut_percentage))
+    return text[:cut_point], text[cut_point:]
+
+def generate_text(input_ids, attention_mask, model, tokenizer, temperature=1, top_k=None, top_p=1):
+    # Ensure input_ids and attention_mask have compatible dimensions
+    if input_ids.dim() != attention_mask.dim():
+        attention_mask = attention_mask.unsqueeze(0)  # Adjust dimensions if necessary
+
+    with torch.no_grad():
+        output = model.generate(
+            input_ids, 
+            attention_mask=attention_mask, 
+            max_new_tokens=50, 
+            num_return_sequences=1, 
+            pad_token_id=tokenizer.eos_token_id,
+            temperature=temperature,
+            top_k=top_k,
+            top_p=top_p
+        )
+    return tokenizer.decode(output[0], skip_special_tokens=True)
+
+def generate_texts(dataset, model, tokenizer, device, temperature=1, top_k=None, top_p=1):
     generated_texts = []
     references = []
 
@@ -47,7 +64,7 @@ def generate_texts(dataset, model, tokenizer, device):
         # Generate text using the tokenized incomplete_text
         input_ids = input_ids.to(device)
         attention_mask = attention_mask.to(device)
-        generated_text = generate_text(input_ids, attention_mask, model, tokenizer)
+        generated_text = generate_text(input_ids, attention_mask, model, tokenizer, temperature, top_k, top_p)
         
         if generated_text.strip():
             generated_texts.append(generated_text)
@@ -55,233 +72,148 @@ def generate_texts(dataset, model, tokenizer, device):
     
     return generated_texts, references
 
-def generate_text(input_ids, attention_mask, model, tokenizer):
-    # Ensure input_ids and attention_mask have compatible dimensions
-    if input_ids.dim() != attention_mask.dim():
-        attention_mask = attention_mask.unsqueeze(0)  # Adjust dimensions if necessary
-
-    with torch.no_grad():
-        output = model.generate(
-            input_ids, 
-            attention_mask=attention_mask, 
-            max_new_tokens=50, 
-            num_return_sequences=1, 
-            pad_token_id=tokenizer.eos_token_id,
-        )
-    return tokenizer.decode(output[0], skip_special_tokens=True)
-
-def tokenize(examples):
+def tokenize(examples, tokenizer):
     # Tokenize input text
     tokenized_output = tokenizer(examples['text'], truncation=True, padding='max_length', max_length=128)
     # Shift the input_ids to create the labels
     tokenized_output['labels'] = tokenized_output['input_ids'].copy()
     return tokenized_output
 
-def calculate_bleu_meteor_rouge(generated_texts, references):
-    bleu_scores = []
-    gleu_scores = []
-    meteor_scores = []
-    rouge1_scores = []
-    rouge2_scores = []
-    rougeL_scores = []
+def save_generated_texts(model_name, generated_texts, references, output_dir):
+    # Ensure the output directory exists
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.join(output_dir, f"{model_name}.txt")
 
-    # Ensure tokenization
-    tokenized_references = [word_tokenize(reference) for reference in references]
-    tokenized_generated_texts = [word_tokenize(generated_text) for generated_text in generated_texts]
+    with open(output_file, 'w') as f:
+        f.write("Generated Texts and References\n")
+        for generated, reference in zip(generated_texts, references):
+            f.write(f"Generated: {generated}\n")
+            f.write(f"Reference: {reference}\n")
+            f.write("\n")
 
-    smoothing = SmoothingFunction().method1
-    scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
+def read_hardware_metrics(file_path):
+    metrics = {}
+    with open(file_path, 'r') as file:
+        for line in file:
+            key, value = line.strip().split(':')
+            metrics[key] = float(value)
+    return metrics
 
-    for reference_tokens, generated_tokens in zip(tokenized_references, tokenized_generated_texts):
-        # BLEU score calculation
-        bleu_score = sentence_bleu([reference_tokens], generated_tokens, smoothing_function=smoothing)
-        bleu_scores.append(bleu_score)
+def save_hardware_metrics_summary(hardware_metrics, output_dir):
+    for model_name, metrics_list in hardware_metrics.items():
+        raw_data_file = os.path.join(output_dir, model_name, f'{model_name}_raw.txt')
+        with open(raw_data_file, 'w') as file:
+            # Combine metrics from all experiments for the model
+            aggregated_metrics = {}
+            for metrics in metrics_list:
+                for key, value in metrics.items():
+                    aggregated_metrics.setdefault(key, []).append(value)
+            for key, values in aggregated_metrics.items():
+                mean_val = np.mean(values)
+                file.write(f'{key}: {mean_val:.4f}\n')
 
-        # Sentence GLEU score using 4--grams
-        gleu_score = sentence_gleu([reference_tokens], generated_tokens, max_len=4)
-        gleu_scores.append(gleu_score)
+def perform_statistical_tests_for_hardware_metrics(hardware_metrics):
+    print("\nHardware Metrics Statistical Tests")
+    metrics_names = next(iter(hardware_metrics.values()))[0].keys()  # Get metric names from the first model's first experiment
 
-        # METEOR score calculation (requires tokenized references and hypotheses)
-        meteor = meteor_score([reference_tokens], generated_tokens)
-        meteor_scores.append(meteor)
+    for metric_name in metrics_names:
+        print(f"\n{metric_name} Comparison:")
+        metric_values = {
+            name: [metrics[metric_name] for metrics in metrics_list]
+            for name, metrics_list in hardware_metrics.items()
+        }
 
-    # ROUGE-L score calculation
-    for reference, generated_text in zip(references, generated_texts):
-        rouge_scores = scorer.score(reference, generated_text)
-        rouge1_scores.append(rouge_scores['rouge1'].fmeasure)
-        rouge2_scores.append(rouge_scores['rouge2'].fmeasure)
-        rougeL_scores.append(rouge_scores['rougeL'].fmeasure)
+        for model1 in metric_values:
+            for model2 in metric_values:
+                if model1 >= model2:
+                    continue
+                try:
+                    w_stat, w_pval = wilcoxon(metric_values[model1], metric_values[model2])
+                    print(f"{model1} vs {model2}: Wilcoxon W={w_stat:.4f}, p={w_pval:.4e}")
+                except ValueError:
+                    print(f"Skipping {model1} vs {model2}: Not enough paired samples for Wilcoxon test.")
 
-    return np.mean(bleu_scores), np.mean(gleu_scores), np.mean(meteor_scores), np.mean(rouge1_scores), np.mean(rouge2_scores), np.mean(rougeL_scores)
+def main(num_experiments, use_small_dataset=False, temperature=1, top_k=None, top_p=1):
+    # Load models and tokenizer
+    print('Loading models...')
+    model_paths = ['models/distilgpt2/distilgpt2_3epochs', 'models/distilgpt2/distilgpt2_5epochs', 
+                   'models/distilgpt2/distilgpt2_10epochs', 'models/distilgpt2/distilgpt2_12epochs', 
+                   'models/distilgpt2/distilgpt2_15epochs']
+    models = [GPT2LMHeadModel.from_pretrained(path, local_files_only=True) for path in model_paths]
+    model_names = ['distilgpt2_3epochs', 'distilgpt2_5epochs', 'distilgpt2_10epochs', 'distilgpt2_12epochs', 'distilgpt2_15epochs']
+    
+    print('Loading tokenizer...')
+    tokenizer = GPT2Tokenizer.from_pretrained('distilgpt2', force_download=True, resume_download=None, padding_side='left')
+    tokenizer.pad_token = tokenizer.eos_token
 
-def read_metrics_from_file(file_path, bleu_array, gleu_array, meteor_array, rouge1_array, rouge2_array, rougeL_array):
-    if os.path.isfile(metrics_file):
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
-            bleu_array.append(float(lines[0].strip()))
-            gleu_array.append(float(lines[1].strip()))
-            meteor_array.append(float(lines[2].strip()))
-            rouge1_array.append(float(lines[3].strip()))
-            rouge2_array.append(float(lines[4].strip()))
-            rougeL_array.append(float(lines[5].strip()))
+    # Set device
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f'Device is {device}')
 
-# Load models
-print('Loading models...')
-model_paths = [
-    'models/distilgpt2/distilgpt2_3epochs',
-    'models/distilgpt2/distilgpt2_5epochs',
-    'models/distilgpt2/distilgpt2_10epochs',
-    'models/distilgpt2/distilgpt2_12epochs',
-    'models/distilgpt2/distilgpt2_15epochs'
-]
-models = [GPT2LMHeadModel.from_pretrained(path, local_files_only=True) for path in model_paths]
-model_names = ['distilgpt2_3epochs', 'distilgpt2_5epochs', 'distilgpt2_10epochs', 'distilgpt2_12epochs', 'distilgpt2_15epochs']
+    # Move models to device
+    for model in models:
+        model.to(device)
+        model.eval()  # Set to evaluation mode
 
-# Load tokenizer
-print('Loading tokenizer...')
-tokenizer = GPT2Tokenizer.from_pretrained('distilgpt2', force_download=True, resume_download=None, padding_side='left')
-tokenizer.pad_token = tokenizer.eos_token
+    # Load dataset
+    print('Loading WikiText...')
+    dataset = load_dataset('wikitext', 'wikitext-2-raw-v1', verification_mode='no_checks')['test']
+    
+    if use_small_dataset:
+        dataset = dataset.select(range(200))
+    else:
+        dataset = dataset.shuffle(seed=42).select(range(1000))
 
-# Set device
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print(f'Device is {device}')
+    print('Tokenizing dataset...')
+    tokenized_test_dataset = dataset.map(lambda x: tokenize(x, tokenizer=tokenizer), batched=True, remove_columns=['text'])
+    tokenized_test_dataset.set_format(type='torch', columns=['input_ids', 'attention_mask', 'labels'])
 
-# Move models to device
-for model in models:
-    model.to(device)
-    model.eval()  # Set to evaluation mode
+    # Ensure the output directories exist
+    for model_name in model_names:
+        os.makedirs(f'results/distilgpt2/{model_name}', exist_ok=True)
+        os.makedirs(f'stat_dumps/distilgpt2/{model_name}', exist_ok=True)
 
-# Load and tokenize dataset
-print('Loading WikiText...')
-wikitext_2 = load_dataset('wikitext', 'wikitext-2-raw-v1', verification_mode='no_checks')
-test_dataset = wikitext_2['test']
+    # Metrics storage
+    hardware_metrics = {name: [] for name in model_names}
 
-print('Tokenizing dataset...')
-tokenized_test_dataset = test_dataset.map(tokenize, batched=True, remove_columns=['text'])
-tokenized_test_dataset.set_format(type='torch', columns=['input_ids', 'attention_mask', 'labels'])
+    # Experiment loop
+    print('Testing models...')
+    for exp in range(num_experiments):
+        print(f'Experiment {exp + 1}')
+        for model, name in zip(models, model_names):
+            with jtop_stats.JtopStats() as stats:
+                # Start continuous delta calculation in a separate thread
+                delta_thread = Thread(target=stats.calculate_deltas_periodically, args=(30,))
+                delta_thread.start()
 
-# Ensure the output directories exist
-for model_name in model_names:
-    os.makedirs(f'results/{model_name}', exist_ok=True)
-    os.makedirs(f'stat_dumps/distilgpt2/{model_name}', exist_ok=True)
+                # Generate texts using GPU
+                print(f'Generating texts for model {name}...')
+                generated_texts, references = generate_texts(tokenized_test_dataset, model, tokenizer, device, temperature, top_k, top_p)
 
-# Testing models
-print('Testing models...')
+                # Save hardware metrics
+                stats.stop_thread = True
+                delta_thread.join()
+                dump_file = f'stat_dumps/distilgpt2/{name}/metrics_{name}_exp{exp}_{time.time()}.txt'
+                raw_file = f'stat_dumps/distilgpt2/{name}/metrics_{name}_exp{exp}_raw_{time.time()}.txt'
+                stats.dump_deltas(dump_file, raw_file)
+                hardware_metrics[name].append(read_hardware_metrics(raw_file))
+            
+                # Save generated texts and references
+                save_generated_texts(name, generated_texts, references, f'results/distilgpt2/{name}')
 
-for index, model in enumerate(models):
-    with jtop_stats.JtopStats() as stats:
-        # Start continuous delta calculation in a separate thread
-        delta_thread = Thread(target=stats.calculate_deltas_periodically, args=(30,))
-        delta_thread.start()
+    # Save hardware metrics
+    save_hardware_metrics_summary(hardware_metrics, 'stat_dumps/distilgpt2/')
 
-        # Generate texts using GPU
-        print(f'Generating texts for model {model_names[index]}...')
-        generated_texts, references = generate_texts(tokenized_test_dataset, model, tokenizer, device)
+    # Perform statistical tests
+    perform_statistical_tests_for_hardware_metrics(hardware_metrics)
 
-        # Dump stats
-        stats.stop_thread = True
-        delta_thread.join()
-        stats.dump_deltas(f'stat_dumps/distilgpt2/{model_names[index]}/{model_names[index]}.txt', f'stat_dumps/distilgpt2/{model_names[index]}/{model_names[index]}_raw.txt')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("num_experiments", type=int, help="Number of experiments to run")
+    parser.add_argument("--use_small_dataset", type=bool, default=False, help="Whether to use a reduced version of the dataset or not")
+    parser.add_argument("--temp", type=float, default=1.0, help="Sets the temperature for text generation")
+    parser.add_argument("--topk", type=float, default=None, help="Sets the top_k value for text generation")
+    parser.add_argument("--topp", type=float, default=1.0, help="Sets the top_p value for text generation")
+    args = parser.parse_args()
 
-    # Calculate BLEU, METEOR, ROUGE scores
-    print(f'Calculating BLEU, METEOR, ROUGE for model {model_names[index]}...')
-    avg_bleu, avg_gleu, avg_meteor, avg_rouge1, avg_rouge2, avg_rougeL = calculate_bleu_meteor_rouge(generated_texts, references)
-
-    print(f'Model {model_names[index]} --- BLEU: {avg_bleu:.4f}, GLEU: {avg_gleu:.4f}, METEOR: {avg_meteor:.4f}, ROUGE-1: {avg_rouge1:.4f}, ROUGE-2: {avg_rouge2:.4f}, ROUGE-L: {avg_rougeL:.4f}')
-
-    # Save metrics to file
-    metrics_file_path = f'results/distilgpt2/{model_names[index]}/metrics_{model_names[index]}_{time.time()}.txt'
-    with open(metrics_file_path, 'w') as file:
-        file.write(f"{avg_bleu}\n{avg_gleu}\n{avg_meteor}\n{avg_rouge1}\n{avg_rouge2}\n{avg_rougeL}\n")
-
-print('Test finished!')
-
-# Loading metrics for plotting
-print('Loading metrics...')
-BLEU_arr = []
-GLEU_arr = []
-METEOR_arr = []
-ROUGE_1_arr = []
-ROUGE_2_arr = []
-ROUGE_L_arr = []
-root_dir = 'results/distilgpt2'
-raw_data_dir = 'stat_dumps/distilgpt2'
-
-for folder in model_names:
-    metrics_file = os.path.join(root_dir, folder, f'metrics_{folder}.txt')
-    read_metrics_from_file(metrics_file, BLEU_arr, GLEU_arr, METEOR_arr, ROUGE_1_arr, ROUGE_2_arr, ROUGE_L_arr)
-
-print('BLEU scores:', BLEU_arr)
-print('GLEU scores:', GLEU_arr)
-print('METEOR scores:', METEOR_arr)
-print('ROUGE-1 scores:', ROUGE_1_arr)
-print('ROUGE-2 scores:', ROUGE_2_arr)
-print('ROUGE-L scores:', ROUGE_L_arr)
-
-# Plotting
-print('Plotting...')
-epochs = ['3', '5', '10', '12', '15']
-plot_dir = 'results/distilgpt2/plots'
-os.makedirs(plot_dir, exist_ok=True)
-
-# Epochs vs BLEU
-plt.figure(figsize=(10, 6))
-plt.plot(epochs, BLEU_arr, marker='o', linestyle='-', color='b')
-plt.xlabel('Epochs')
-plt.ylabel('BLEU')
-plt.title('Epochs vs BLEU')
-plt.grid(True)
-plt.savefig(os.path.join(plot_dir, 'epochs_vs_bleu.png'))
-plt.show()
-
-# Epochs vs BLEU
-plt.figure(figsize=(10, 6))
-plt.plot(epochs, GLEU_arr, marker='o', linestyle='-', color='b')
-plt.xlabel('Epochs')
-plt.ylabel('GLEU')
-plt.title('Epochs vs GLEU')
-plt.grid(True)
-plt.savefig(os.path.join(plot_dir, 'epochs_vs_gleu.png'))
-plt.show()
-
-# Epochs vs METEOR
-plt.figure(figsize=(10, 6))
-plt.plot(epochs, METEOR_arr, marker='o', linestyle='-', color='g')
-plt.xlabel('Epochs')
-plt.ylabel('METEOR')
-plt.title('Epochs vs METEOR')
-plt.grid(True)
-plt.savefig(os.path.join(plot_dir, 'epochs_vs_meteor.png'))
-plt.show()
-
-# Epochs vs ROUGE-1
-plt.figure(figsize=(10, 6))
-plt.plot(epochs, ROUGE_1_arr, marker='o', linestyle='-', color='r')
-plt.xlabel('Epochs')
-plt.ylabel('ROUGE-1')
-plt.title('Epochs vs ROUGE-1')
-plt.grid(True)
-plt.savefig(os.path.join(plot_dir, 'epochs_vs_rouge1.png'))
-plt.show()
-
-# Epochs vs ROUGE-2
-plt.figure(figsize=(10, 6))
-plt.plot(epochs, ROUGE_2_arr, marker='o', linestyle='-', color='r')
-plt.xlabel('Epochs')
-plt.ylabel('ROUGE-2')
-plt.title('Epochs vs ROUGE-2')
-plt.grid(True)
-plt.savefig(os.path.join(plot_dir, 'epochs_vs_rouge2.png'))
-plt.show()
-
-# Epochs vs ROUGE-L
-plt.figure(figsize=(10, 6))
-plt.plot(epochs, ROUGE_L_arr, marker='o', linestyle='-', color='r')
-plt.xlabel('Epochs')
-plt.ylabel('ROUGE-L')
-plt.title('Epochs vs ROUGE-L')
-plt.grid(True)
-plt.savefig(os.path.join(plot_dir, 'epochs_vs_rougeL.png'))
-plt.show()
-
-print('Plotting completed!')
+    main(args.num_experiments, args.use_small_dataset, args.temp, args.topk, args.topp)
