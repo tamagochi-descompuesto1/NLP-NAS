@@ -1,0 +1,102 @@
+----------------STARTING STATS----------------
+Time:   1969-12-31 22:54:46
+
+POWER:
+    - Voltage:        5040 mV
+    - Current:        1264 mA
+    - Average power:  5677 mW
+
+MEMORY:
+    - Used RAM:          6904140 KB
+    - Total RAM:         7650352 KB
+    - Free RAM:          110692 KB
+    - Cached RAM:        694256 KB
+    - Shared RAM:        2912076 KB
+
+CPU:
+    - Total CPU stats:
+        + User utilization:   16.206227322588813
+        + Nice utilization:   0.0
+        + System utilization: 5.037455817136856
+        + Idle utilization:   77.84350125165246
+    - CPU 1 frequency:   1510400 kHz
+    - CPU 2 frequency:   1510400 kHz
+    - CPU 3 frequency:   1510400 kHz
+    - CPU 4 frequency:   1510400 kHz
+    - CPU 5 frequency:   1510400 kHz
+    - CPU 6 frequency:   1510400 kHz
+
+GPU:
+    - GPU load:                  0.0
+    - Minimum frequency:         306000 kHz
+    - Maximum frequency:         624750 kHz
+    - Current frequency:         612000 kHz
+
+----------------ENDING STATS----------------
+Time:   1969-12-31 23:01:00
+
+POWER:
+    - Voltage:        5048 mV
+    - Current:        984 mA
+    - Average power:  4607 mW
+
+MEMORY:
+    - Used RAM:          6912564 KB
+    - Total RAM:         7650352 KB
+    - Free RAM:          112412 KB
+    - Cached RAM:        683420 KB
+    - Shared RAM:        2899556 KB
+
+CPU:
+    - Total CPU stats:
+        + User utilization:   29.239284140371346
+        + Nice utilization:   0.051199861626968754
+        + System utilization: 12.220022320011555
+        + Idle utilization:   56.46399403082296
+    - CPU 1 frequency:   1510400 kHz
+    - CPU 2 frequency:   1510400 kHz
+    - CPU 3 frequency:   1510400 kHz
+    - CPU 4 frequency:   1510400 kHz
+    - CPU 5 frequency:   729600 kHz
+    - CPU 6 frequency:   729600 kHz
+
+GPU:
+    - GPU load:                  0.0
+    - Minimum frequency:         306000 kHz
+    - Maximum frequency:         624750 kHz
+    - Current frequency:         306000 kHz
+
+----------------CONSUMPTION STATS----------------
+Total Time:   373.58887352199963 seconds
+
+POWER:
+    - Voltage:        1.3333333333333333 mV
+    - Current:        124.66666666666667 mA
+    - Average power:  1666.4027777777776 mW
+
+MEMORY:
+    - Used RAM:          0.0 KB
+    - Total RAM:         0.0 KB
+    - Free RAM:          33967.333333333336 KB
+    - Cached RAM:        0.0 KB
+    - Shared RAM:        0.0 KB
+
+CPU:
+    - Total CPU stats:
+        + User utilization:   0
+        + Nice utilization:   0
+        + System utilization: 0
+        + Idle utilization:   0
+    - CPU 1 frequency:   0.0 kHz
+    - CPU 2 frequency:   0.0 kHz
+    - CPU 3 frequency:   0.0 kHz
+    - CPU 4 frequency:   0.0 kHz
+    - CPU 5 frequency:   0.0 kHz
+    - CPU 6 frequency:   0.0 kHz
+
+GPU:
+    - GPU load:                  31.418055555555558
+    - Minimum frequency:         0.0 kHz
+    - Maximum frequency:         0.0 kHz
+    - Current frequency:         11687.5 kHz
+

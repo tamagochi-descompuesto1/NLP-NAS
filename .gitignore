@@ -152,8 +152,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# Ignore models folder
+# Ignore models and tokenizers folders
 NLP_NAS/models/
+NLP_NAS/tokenizers/
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

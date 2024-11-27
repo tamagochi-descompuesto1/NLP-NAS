@@ -36,10 +36,12 @@ def read_raw_data(file_path, model_name):
 # Load the raw data for all models
 def load_data_for_all_models(model_names, base_dir):
     all_data = []
-    for model_name in model_names:
-        raw_data_path = os.path.join(base_dir, model_name, f'{model_name}_raw.txt')
-        df = read_raw_data(raw_data_path, model_name)
-        all_data.append(df)
+    for folder in os.listdir(base_dir):
+        for raw_file in os.listdir(os.path.join(base_dir, folder, 'raws')):
+            raw_data_path = os.path.join(base_dir, folder, 'raws', raw_file)
+            df = read_raw_data(raw_data_path, folder)
+            all_data.append(df)
+
     return pd.concat(all_data, ignore_index=True)
 
 # Define the function to normalize and plot all metrics in a single grouped bar plot
@@ -273,7 +275,7 @@ def compare_models_with_all_plots(model_names, base_dir):
 
 # Define the models and paths
 model_names = ['distilgpt2_3epochs', 'distilgpt2_5epochs', 'distilgpt2_10epochs', 'distilgpt2_12epochs', 'distilgpt2_15epochs']
-raw_data_dir = 'stat_dumps/distilgpt2'
+raw_data_dir = 'stat_dumps/distilgpt2/'
 
 # Set consistent color palette for models
 palette = sns.color_palette("Set2", len(model_names))

@@ -101,7 +101,7 @@ def read_hardware_metrics(file_path):
 
 def save_hardware_metrics_summary(hardware_metrics, output_dir):
     for model_name, metrics_list in hardware_metrics.items():
-        raw_data_file = os.path.join(output_dir, model_name, f'{model_name}_raw.txt')
+        raw_data_file = os.path.join(output_dir, model_name, 'raws', f'{model_name}_raw_{time.time()}.txt')
         with open(raw_data_file, 'w') as file:
             # Combine metrics from all experiments for the model
             aggregated_metrics = {}
@@ -143,7 +143,7 @@ def main(num_experiments, use_small_dataset=False, temperature=1, top_k=None, to
     model_names = ['distilgpt2_3epochs', 'distilgpt2_5epochs', 'distilgpt2_10epochs', 'distilgpt2_12epochs', 'distilgpt2_15epochs']
     
     print('Loading tokenizer...')
-    tokenizer = GPT2Tokenizer.from_pretrained('distilgpt2', force_download=True, resume_download=None, padding_side='left')
+    tokenizer = GPT2Tokenizer.from_pretrained('tokenizers/distilgpt2', padding_side='left')
     tokenizer.pad_token = tokenizer.eos_token
 
     # Set device
@@ -193,13 +193,13 @@ def main(num_experiments, use_small_dataset=False, temperature=1, top_k=None, to
                 # Save hardware metrics
                 stats.stop_thread = True
                 delta_thread.join()
-                dump_file = f'stat_dumps/distilgpt2/{name}/metrics_{name}_exp{exp}_{time.time()}.txt'
-                raw_file = f'stat_dumps/distilgpt2/{name}/metrics_{name}_exp{exp}_raw_{time.time()}.txt'
+                dump_file = f'stat_dumps/distilgpt2/{name}/metrics_{name}_exp{exp + 1}_{time.time()}.txt'
+                raw_file = f'stat_dumps/distilgpt2/{name}/metrics_{name}_exp{exp + 1}_raw_{time.time()}.txt'
                 stats.dump_deltas(dump_file, raw_file)
                 hardware_metrics[name].append(read_hardware_metrics(raw_file))
             
                 # Save generated texts and references
-                save_generated_texts(name, generated_texts, references, f'results/distilgpt2/{name}')
+                save_generated_texts(f'{name}_exp{exp + 1}_{time.time()}', generated_texts, references, f'results/distilgpt2/{name}')
 
     # Save hardware metrics
     save_hardware_metrics_summary(hardware_metrics, 'stat_dumps/distilgpt2/')
