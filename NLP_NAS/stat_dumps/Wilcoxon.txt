@@ -1,3 +1,4 @@
+First experiment:
 Hardware Metrics Statistical Tests
 
 Time_delta Comparison:
@@ -207,3 +208,439 @@ distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=1.7971e-01
 distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=3.1731e-01
 distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
 distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+
+Second experiment:
+Hardware Metrics Statistical Tests
+
+Time_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=1.2500e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=1.2500e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=2.0000, p=1.8750e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=2.0000, p=1.8750e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=3.0000, p=3.1250e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=6.2500e-02
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=6.2500e-02
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=3.0000, p=3.1250e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=6.2500e-02
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=2.0000, p=1.8750e-01
+
+Power_voltage_mV_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=5.0000, p=6.2500e-01
+/home/israel/.local/lib/python3.8/site-packages/scipy/stats/_morestats.py:3414: UserWarning: Exact p-value calculation does not work if there are zeros. Switching to normal approximation.
+  warnings.warn("Exact p-value calculation does not work if there are "
+/home/israel/.local/lib/python3.8/site-packages/scipy/stats/_morestats.py:3428: UserWarning: Sample size too small for normal approximation.
+  warnings.warn("Sample size too small for normal approximation.")
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=2.0000, p=5.9298e-01
+/home/israel/.local/lib/python3.8/site-packages/scipy/stats/_morestats.py:3414: UserWarning: Exact p-value calculation does not work if there are zeros. Switching to normal approximation.
+  warnings.warn("Exact p-value calculation does not work if there are "
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=3.0000, p=4.6521e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=2.0000, p=1.8750e-01
+
+Power_current_mA_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=4.0000, p=4.3750e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=1.2500e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=4.0000, p=4.3750e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=4.0000, p=4.3750e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=3.1250e-01
+
+Power_avg_power_mW_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=4.0000, p=4.3750e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=7.0000, p=1.0000e+00
+
+Memory_used_KB_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=1.0881e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=2.8505e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=1.0000, p=1.4413e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=4.6521e-01
+
+Memory_total_KB_delta Comparison:
+Skipping distilgpt2_3epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_10epochs vs distilgpt2_3epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_10epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_10epochs vs distilgpt2_12epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_10epochs vs distilgpt2_15epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_12epochs vs distilgpt2_3epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_12epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_12epochs vs distilgpt2_15epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_15epochs vs distilgpt2_3epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_15epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+
+Memory_free_KB_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=6.2500e-02
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=3.0000, p=3.1250e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=4.0000, p=4.3750e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=6.0000, p=8.1250e-01
+
+Memory_cached_KB_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=2.8505e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=1.0000, p=2.8505e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=6.5472e-01
+
+Memory_shared_KB_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=3.1731e-01
+Skipping distilgpt2_15epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+
+GPU_load_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=4.6521e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=6.2500e-01
+
+GPU_curr_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=5.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=6.5000, p=8.1250e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=4.5000, p=8.5392e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=6.0000, p=8.1250e-01
+
+CPU1_current_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+
+CPU2_current_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=2.8505e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=1.0000, p=2.8505e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+
+CPU3_current_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+
+CPU4_current_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=2.8505e-01
+
+CPU5_current_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=3.0000, p=4.6521e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=3.0000, p=4.6521e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=2.8505e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=3.0000, p=4.6521e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=2.8505e-01
+
+CPU6_current_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=2.8505e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=6.5472e-01
+
+Third experiment:
+Hardware Metrics Statistical Tests
+
+Time_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=6.2500e-02
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=3.0000, p=3.1250e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=4.0000, p=4.3750e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=1.0000, p=1.2500e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=1.0000, p=1.2500e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=6.2500e-02
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=3.1250e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=4.0000, p=4.3750e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=6.2500e-02
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=3.1250e-01
+
+Power_voltage_mV_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=6.2500e-01
+/home/israel/.local/lib/python3.8/site-packages/scipy/stats/_morestats.py:3414: UserWarning: Exact p-value calculation does not work if there are zeros. Switching to normal approximation.
+  warnings.warn("Exact p-value calculation does not work if there are "
+/home/israel/.local/lib/python3.8/site-packages/scipy/stats/_morestats.py:3428: UserWarning: Sample size too small for normal approximation.
+  warnings.warn("Sample size too small for normal approximation.")
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=4.0000, p=7.1500e-01
+/home/israel/.local/lib/python3.8/site-packages/scipy/stats/_morestats.py:3414: UserWarning: Exact p-value calculation does not work if there are zeros. Switching to normal approximation.
+  warnings.warn("Exact p-value calculation does not work if there are "
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=2.0000, p=1.8750e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=3.0000, p=3.1250e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=6.7889e-02
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=5.0000, p=1.0000e+00
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=2.0000, p=2.7332e-01
+
+Power_current_mA_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=3.1250e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=7.0000, p=1.0000e+00
+
+Power_avg_power_mW_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=4.0000, p=4.3750e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=4.0000, p=4.3750e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=6.2500e-02
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=7.0000, p=1.0000e+00
+
+Memory_used_KB_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=4.6521e-01
+
+Memory_total_KB_delta Comparison:
+Skipping distilgpt2_3epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_10epochs vs distilgpt2_3epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_10epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_10epochs vs distilgpt2_12epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_10epochs vs distilgpt2_15epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_12epochs vs distilgpt2_3epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_12epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_12epochs vs distilgpt2_15epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_15epochs vs distilgpt2_3epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_15epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+
+Memory_free_KB_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=2.0000, p=1.8750e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=3.0000, p=3.1250e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=4.0000, p=4.3750e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=5.0000, p=6.2500e-01
+
+Memory_cached_KB_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=3.1731e-01
+Skipping distilgpt2_10epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_10epochs vs distilgpt2_12epochs: Not enough paired samples for Wilcoxon test.
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=3.1731e-01
+Skipping distilgpt2_12epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+
+Memory_shared_KB_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=3.1731e-01
+Skipping distilgpt2_10epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+
+GPU_load_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=3.0000, p=3.1250e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=7.0000, p=1.0000e+00
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=6.0000, p=8.1250e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=3.1250e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=4.0000, p=4.3750e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=7.0000, p=1.0000e+00
+
+GPU_curr_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=2.8505e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=5.0000, p=6.2500e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=1.0881e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=3.0000, p=4.6521e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=6.5472e-01
+
+CPU1_current_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=3.1731e-01
+Skipping distilgpt2_12epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_12epochs vs distilgpt2_15epochs: Not enough paired samples for Wilcoxon test.
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=3.1731e-01
+Skipping distilgpt2_15epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+
+CPU2_current_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=3.1731e-01
+Skipping distilgpt2_12epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_12epochs vs distilgpt2_15epochs: Not enough paired samples for Wilcoxon test.
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=3.1731e-01
+Skipping distilgpt2_15epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+
+CPU3_current_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=1.0881e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+Skipping distilgpt2_12epochs vs distilgpt2_15epochs: Not enough paired samples for Wilcoxon test.
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=1.0881e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+
+CPU4_current_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=1.7971e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=6.5472e-01
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=0.0000, p=3.1731e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=1.7971e-01
+Skipping distilgpt2_12epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+Skipping distilgpt2_12epochs vs distilgpt2_15epochs: Not enough paired samples for Wilcoxon test.
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=1.7971e-01
+Skipping distilgpt2_15epochs vs distilgpt2_5epochs: Not enough paired samples for Wilcoxon test.
+
+CPU5_current_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=1.0881e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=2.8505e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=5.0000, p=1.0000e+00
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=1.4413e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=2.8505e-01
+
+CPU6_current_freq_delta Comparison:
+distilgpt2_3epochs vs distilgpt2_5epochs: Wilcoxon W=2.0000, p=5.9298e-01
+distilgpt2_10epochs vs distilgpt2_3epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_5epochs: Wilcoxon W=3.0000, p=1.0000e+00
+distilgpt2_10epochs vs distilgpt2_12epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_10epochs vs distilgpt2_15epochs: Wilcoxon W=4.0000, p=7.1500e-01
+distilgpt2_12epochs vs distilgpt2_3epochs: Wilcoxon W=0.0000, p=1.0881e-01
+distilgpt2_12epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=2.8505e-01
+distilgpt2_12epochs vs distilgpt2_15epochs: Wilcoxon W=5.0000, p=1.0000e+00
+distilgpt2_15epochs vs distilgpt2_3epochs: Wilcoxon W=1.0000, p=1.4413e-01
+distilgpt2_15epochs vs distilgpt2_5epochs: Wilcoxon W=1.0000, p=2.8505e-01
+
+Performance Metrics Summary:
+                    Power_avg_power_mW_delta            Memory_used_KB_delta             GPU_load_delta          CPU_avg_freq_delta               
+                                        mean        max                 mean         max           mean      max               mean            max
+model                                                                                                                                             
+distilgpt2_10epochs              1428.897467  1656.1694           568.204933   1557.1748      13.876833  16.5058       91772.401444  127758.321667
+distilgpt2_12epochs              1391.246600  1530.1817           247.873067    600.3368      14.852233  24.4094       50376.759378   76635.797967
+distilgpt2_15epochs              1408.138100  1535.7713           515.424767   1082.5900      14.738500  21.4670       90131.319828  152797.261683
+distilgpt2_3epochs               1671.556633  1724.6317         54269.237333  90198.6606      21.414933  27.2660       84218.425667  165456.060600
+distilgpt2_5epochs               1493.902133  1551.0508           326.517167    518.3948      14.877800  17.8169       75496.117328  168707.878783

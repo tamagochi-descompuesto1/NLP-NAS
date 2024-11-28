@@ -1,0 +1,102 @@
+----------------STARTING STATS----------------
+Time:   1969-12-31 18:16:20
+
+POWER:
+    - Voltage:        5032 mV
+    - Current:        1440 mA
+    - Average power:  5901 mW
+
+MEMORY:
+    - Used RAM:          6553824 KB
+    - Total RAM:         7650348 KB
+    - Free RAM:          103304 KB
+    - Cached RAM:        1047640 KB
+    - Shared RAM:        2884808 KB
+
+CPU:
+    - Total CPU stats:
+        + User utilization:   14.605708311754938
+        + Nice utilization:   0.0
+        + System utilization: 2.9112680350997766
+        + Idle utilization:   81.49904893737506
+    - CPU 1 frequency:   1510400 kHz
+    - CPU 2 frequency:   1510400 kHz
+    - CPU 3 frequency:   1510400 kHz
+    - CPU 4 frequency:   1510400 kHz
+    - CPU 5 frequency:   729600 kHz
+    - CPU 6 frequency:   729600 kHz
+
+GPU:
+    - GPU load:                  64.2
+    - Minimum frequency:         306000 kHz
+    - Maximum frequency:         624750 kHz
+    - Current frequency:         624750 kHz
+
+----------------ENDING STATS----------------
+Time:   1969-12-31 18:22:03
+
+POWER:
+    - Voltage:        5056 mV
+    - Current:        904 mA
+    - Average power:  4356 mW
+
+MEMORY:
+    - Used RAM:          6508156 KB
+    - Total RAM:         7650348 KB
+    - Free RAM:          169648 KB
+    - Cached RAM:        1026892 KB
+    - Shared RAM:        2878032 KB
+
+CPU:
+    - Total CPU stats:
+        + User utilization:   14.79734694604227
+        + Nice utilization:   0.0
+        + System utilization: 2.8563382287724934
+        + Idle utilization:   81.55486571261171
+    - CPU 1 frequency:   1510400 kHz
+    - CPU 2 frequency:   1510400 kHz
+    - CPU 3 frequency:   1510400 kHz
+    - CPU 4 frequency:   1510400 kHz
+    - CPU 5 frequency:   1344000 kHz
+    - CPU 6 frequency:   1267200 kHz
+
+GPU:
+    - GPU load:                  35.1
+    - Minimum frequency:         306000 kHz
+    - Maximum frequency:         624750 kHz
+    - Current frequency:         306000 kHz
+
+----------------CONSUMPTION STATS----------------
+Total Time:   342.79714408300003 seconds
+
+POWER:
+    - Voltage:        2.1818181818181817 mV
+    - Current:        77.81818181818181 mA
+    - Average power:  1766.4545454545455 mW
+
+MEMORY:
+    - Used RAM:          0.0 KB
+    - Total RAM:         0.0 KB
+    - Free RAM:          18807.636363636364 KB
+    - Cached RAM:        11657.454545454546 KB
+    - Shared RAM:        0.0 KB
+
+CPU:
+    - Total CPU stats:
+        + User utilization:   0
+        + Nice utilization:   0
+        + System utilization: 0
+        + Idle utilization:   0
+    - CPU 1 frequency:   0.0 kHz
+    - CPU 2 frequency:   0.0 kHz
+    - CPU 3 frequency:   0.0 kHz
+    - CPU 4 frequency:   0.0 kHz
+    - CPU 5 frequency:   212945.45454545456 kHz
+    - CPU 6 frequency:   283927.2727272727 kHz
+
+GPU:
+    - GPU load:                  0.21515151515151196
+    - Minimum frequency:         0.0 kHz
+    - Maximum frequency:         0.0 kHz
+    - Current frequency:         0.0 kHz
+

@@ -1,0 +1,102 @@
+----------------STARTING STATS----------------
+Time:   1969-12-31 21:04:32
+
+POWER:
+    - Voltage:        5064 mV
+    - Current:        856 mA
+    - Average power:  4354 mW
+
+MEMORY:
+    - Used RAM:          5933640 KB
+    - Total RAM:         7650348 KB
+    - Free RAM:          267116 KB
+    - Cached RAM:        1477724 KB
+    - Shared RAM:        2484808 KB
+
+CPU:
+    - Total CPU stats:
+        + User utilization:   5.158069883527454
+        + Nice utilization:   0.0
+        + System utilization: 13.976705490848584
+        + Idle utilization:   66.38935108153078
+    - CPU 1 frequency:   1497600 kHz
+    - CPU 2 frequency:   1498000 kHz
+    - CPU 3 frequency:   1190400 kHz
+    - CPU 4 frequency:   1190400 kHz
+    - CPU 5 frequency:   729600 kHz
+    - CPU 6 frequency:   729600 kHz
+
+GPU:
+    - GPU load:                  0.0
+    - Minimum frequency:         306000 kHz
+    - Maximum frequency:         624750 kHz
+    - Current frequency:         306000 kHz
+
+----------------ENDING STATS----------------
+Time:   1969-12-31 21:09:44
+
+POWER:
+    - Voltage:        5056 mV
+    - Current:        896 mA
+    - Average power:  4855 mW
+
+MEMORY:
+    - Used RAM:          6317224 KB
+    - Total RAM:         7650348 KB
+    - Free RAM:          143956 KB
+    - Cached RAM:        1215604 KB
+    - Shared RAM:        2874440 KB
+
+CPU:
+    - Total CPU stats:
+        + User utilization:   17.375206891702337
+        + Nice utilization:   0.030214902933685277
+        + System utilization: 7.069536045733132
+        + Idle utilization:   73.81230340029593
+    - CPU 1 frequency:   729600 kHz
+    - CPU 2 frequency:   729600 kHz
+    - CPU 3 frequency:   729600 kHz
+    - CPU 4 frequency:   729600 kHz
+    - CPU 5 frequency:   729600 kHz
+    - CPU 6 frequency:   729600 kHz
+
+GPU:
+    - GPU load:                  0.0
+    - Minimum frequency:         306000 kHz
+    - Maximum frequency:         624750 kHz
+    - Current frequency:         306000 kHz
+
+----------------CONSUMPTION STATS----------------
+Total Time:   311.33434004099945 seconds
+
+POWER:
+    - Voltage:        0.0 mV
+    - Current:        630.4 mA
+    - Average power:  3386.3 mW
+
+MEMORY:
+    - Used RAM:          362890.4 KB
+    - Total RAM:         0.0 KB
+    - Free RAM:          0.0 KB
+    - Cached RAM:        0.0 KB
+    - Shared RAM:        392096.0 KB
+
+CPU:
+    - Total CPU stats:
+        + User utilization:   0
+        + Nice utilization:   0
+        + System utilization: 0
+        + Idle utilization:   0
+    - CPU 1 frequency:   10240.0 kHz
+    - CPU 2 frequency:   9920.0 kHz
+    - CPU 3 frequency:   256000.0 kHz
+    - CPU 4 frequency:   288000.0 kHz
+    - CPU 5 frequency:   101120.0 kHz
+    - CPU 6 frequency:   116480.0 kHz
+
+GPU:
+    - GPU load:                  62.364999999999995
+    - Minimum frequency:         0.0 kHz
+    - Maximum frequency:         0.0 kHz
+    - Current frequency:         318750.0 kHz
+
