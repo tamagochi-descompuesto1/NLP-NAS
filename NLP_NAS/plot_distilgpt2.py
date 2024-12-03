@@ -44,7 +44,6 @@ def load_data_for_all_models(model_names, base_dir):
 
     return pd.concat(all_data, ignore_index=True)
 
-# Define the function to normalize and plot all metrics in a single grouped bar plot
 def plot_normalized_grouped_bars(df, metrics, plot_filename):
     # Select the necessary columns (model and the metrics of interest)
     df_grouped = df[['model'] + metrics]
@@ -57,12 +56,14 @@ def plot_normalized_grouped_bars(df, metrics, plot_filename):
     df_melted = df_grouped.melt(id_vars='model', var_name='Metric', value_name='Normalized Value')
     
     plt.figure(figsize=(12, 6))
-    sns.barplot(x='model', y='Normalized Value', hue='Metric', data=df_melted, palette='Set2')
+    # Disable confidence intervals (ci=None) to remove black error bars
+    sns.barplot(x='model', y='Normalized Value', hue='Metric', data=df_melted, palette='Set2', errorbar=None)
     
-    plt.title('Normalized Comparison of Models Across Metrics')
-    plt.xlabel('Model')
-    plt.ylabel('Normalized Metric Value (0-1)')
+    plt.title('Normalized Comparison of Models Across Metrics', fontsize=16)
+    plt.xlabel('Model', fontsize=12)
+    plt.ylabel('Normalized Metric Value (0-1)', fontsize=12)
     plt.grid(True, axis='y', linestyle='--')
+    plt.tight_layout()
     
     # Save and show the plot
     plt.savefig(os.path.join(plot_dir, plot_filename))
@@ -180,39 +181,74 @@ def plot_parallel_coordinates(df, plot_filename):
 # Additional plotting functions (time-related)
 def plot_total_time(df, plot_filename):
     plt.figure(figsize=(10, 6))
-    sns.barplot(x='model', y='Time_delta', hue='model', data=df, palette=palette, dodge=False)
-    plt.title('Total Time Comparison Across Models')
-    plt.ylabel('Total Time (seconds)')
+    # Disable confidence intervals (ci=None) to remove black bars
+    sns.barplot(x='model', y='Time_delta', hue='model', data=df, palette=palette, dodge=False, errorbar=None)
+    plt.title('Total Time Comparison Across Models', fontsize=16)
+    plt.xlabel('Model', fontsize=12)
+    plt.ylabel('Total Time (seconds)', fontsize=12)
     plt.grid(True, axis='y', linestyle='--')
+    plt.tight_layout()
     plt.savefig(os.path.join(plot_dir, plot_filename))  # Save the plot
     plt.show()  # Show the plot
 
 def plot_time_vs_metric(df, metric, title, ylabel, plot_filename):
     plt.figure(figsize=(10, 6))
-    for model in df['model'].unique():
-        model_df = df[df['model'] == model]
+
+    # Group by 'model' and calculate mean
+    aggregated_df = df.groupby('model', as_index=False).mean()
+
+    # Plot aggregated metrics
+    for model in aggregated_df['model'].unique():
+        model_df = aggregated_df[aggregated_df['model'] == model]
         plt.plot(model_df['Time_delta'], model_df[metric], label=model, marker='o')
-    plt.title(title)
-    plt.xlabel('Time (seconds)')
-    plt.ylabel(ylabel)
-    plt.legend()
-    plt.grid(True)
-    plt.savefig(os.path.join(plot_dir, plot_filename))  # Save the plot
-    plt.show()  # Show the plot
+
+    plt.title(title, fontsize=16)
+    plt.xlabel('Time (seconds)', fontsize=12)
+    plt.ylabel(ylabel, fontsize=12)
+    plt.legend(title='Model', fontsize=10, loc='best')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.tight_layout()
+
+    # Save the plot
+    plt.savefig(os.path.join(plot_dir, plot_filename))
+    plt.show()
 
 def plot_time_vs_load(df, plot_filename):
+    # Aggregate the data by model, calculating mean for Time_delta, GPU_load_delta, and CPU_avg_freq_delta
+    aggregated_df = (
+        df.groupby('model', as_index=False)
+        .mean()
+        .loc[:, ['model', 'Time_delta', 'GPU_load_delta', 'CPU_avg_freq_delta']]
+    )
+
     plt.figure(figsize=(10, 6))
-    for model in df['model'].unique():
-        model_df = df[df['model'] == model]
-        plt.plot(model_df['Time_delta'], model_df['GPU_load_delta'], label=f'{model} GPU Load', marker='o')
-        plt.plot(model_df['Time_delta'], model_df['CPU_avg_freq_delta'], label=f'{model} CPU Freq', marker='x')
-    plt.title('Time vs CPU/GPU Load')
-    plt.xlabel('Time (seconds)')
-    plt.ylabel('Load / Frequency (kHz)')
-    plt.legend()
-    plt.grid(True)
-    plt.savefig(os.path.join(plot_dir, plot_filename))  # Save the plot
-    plt.show()  # Show the plot
+
+    # Plot GPU and CPU metrics for each model
+    for model in aggregated_df['model'].unique():
+        model_df = aggregated_df[aggregated_df['model'] == model]
+        plt.plot(
+            model_df['Time_delta'],
+            model_df['GPU_load_delta'],
+            label=f'{model} GPU Load',
+            marker='o',
+        )
+        plt.plot(
+            model_df['Time_delta'],
+            model_df['CPU_avg_freq_delta'],
+            label=f'{model} CPU Freq',
+            marker='x',
+        )
+
+    plt.title('Time vs CPU/GPU Load', fontsize=16)
+    plt.xlabel('Time (seconds)', fontsize=12)
+    plt.ylabel('Load / Frequency (kHz)', fontsize=12)
+    plt.legend(title='Metric', fontsize=10, loc='best')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.tight_layout()
+
+    # Save and show the plot
+    plt.savefig(os.path.join(plot_dir, plot_filename))
+    plt.show()
 
 # Main function to load data and plot comparisons, including time-related plots
 def compare_models_with_all_plots(model_names, base_dir):
