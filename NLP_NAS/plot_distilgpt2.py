@@ -9,7 +9,7 @@ from pandas.plotting import parallel_coordinates
 from sklearn.preprocessing import MinMaxScaler
 
 # Ensure the plots directory exists
-plot_dir = 'results/distilgpt2/plots'
+plot_dir = 'results/NAS_DGPT2/plots'
 os.makedirs(plot_dir, exist_ok=True)
 
 # Function to read raw data into a DataFrame and tag with model name
@@ -274,8 +274,8 @@ def compare_models_with_all_plots(model_names, base_dir):
     calculate_performance_metrics(df)
 
 # Define the models and paths
-model_names = ['distilgpt2_3epochs', 'distilgpt2_5epochs', 'distilgpt2_10epochs', 'distilgpt2_12epochs', 'distilgpt2_15epochs']
-raw_data_dir = 'stat_dumps/distilgpt2/'
+model_names = ['NAS_DGPT2_model_1', 'NAS_DGPT2_model_2', 'NAS_DGPT2_model_3', 'NAS_DGPT2_model_4']
+raw_data_dir = 'stat_dumps/NAS_DGPT2/'
 
 # Set consistent color palette for models
 palette = sns.color_palette("Set2", len(model_names))

@@ -136,11 +136,10 @@ def perform_statistical_tests_for_hardware_metrics(hardware_metrics):
 def main(num_experiments, use_small_dataset=False, temperature=1, top_k=None, top_p=1):
     # Load models and tokenizer
     print('Loading models...')
-    model_paths = ['models/distilgpt2/distilgpt2_3epochs', 'models/distilgpt2/distilgpt2_5epochs', 
-                   'models/distilgpt2/distilgpt2_10epochs', 'models/distilgpt2/distilgpt2_12epochs', 
-                   'models/distilgpt2/distilgpt2_15epochs']
+    model_paths = ['models/NAS_DGPT2/model_1', 'models/NAS_DGPT2/model_2', 
+                   'models/NAS_DGPT2/model_3', 'models/NAS_DGPT2/model_4']
     models = [GPT2LMHeadModel.from_pretrained(path, local_files_only=True) for path in model_paths]
-    model_names = ['distilgpt2_3epochs', 'distilgpt2_5epochs', 'distilgpt2_10epochs', 'distilgpt2_12epochs', 'distilgpt2_15epochs']
+    model_names = ['NAS_DGPT2_model_1', 'NAS_DGPT2_model_2', 'NAS_DGPT2_model_3', 'NAS_DGPT2_model_4']
     
     print('Loading tokenizer...')
     tokenizer = GPT2Tokenizer.from_pretrained('tokenizers/distilgpt2', padding_side='left')
@@ -170,8 +169,8 @@ def main(num_experiments, use_small_dataset=False, temperature=1, top_k=None, to
 
     # Ensure the output directories exist
     for model_name in model_names:
-        os.makedirs(f'results/distilgpt2/{model_name}', exist_ok=True)
-        os.makedirs(f'stat_dumps/distilgpt2/{model_name}', exist_ok=True)
+        os.makedirs(f'results/NAS_DGPT2/{model_name}', exist_ok=True)
+        os.makedirs(f'stat_dumps/NAS_DGPT2/{model_name}', exist_ok=True)
 
     # Metrics storage
     hardware_metrics = {name: [] for name in model_names}
@@ -193,16 +192,16 @@ def main(num_experiments, use_small_dataset=False, temperature=1, top_k=None, to
                 # Save hardware metrics
                 stats.stop_thread = True
                 delta_thread.join()
-                dump_file = f'stat_dumps/distilgpt2/{name}/metrics_{name}_exp{exp + 1}_{time.time()}.txt'
-                raw_file = f'stat_dumps/distilgpt2/{name}/metrics_{name}_exp{exp + 1}_raw_{time.time()}.txt'
+                dump_file = f'stat_dumps/NAS_DGPT2/{name}/metrics_{name}_exp{exp + 1}_{time.time()}.txt'
+                raw_file = f'stat_dumps/NAS_DGPT2/{name}/metrics_{name}_exp{exp + 1}_raw_{time.time()}.txt'
                 stats.dump_deltas(dump_file, raw_file)
                 hardware_metrics[name].append(read_hardware_metrics(raw_file))
             
                 # Save generated texts and references
-                save_generated_texts(f'{name}_exp{exp + 1}_{time.time()}', generated_texts, references, f'results/distilgpt2/{name}')
+                save_generated_texts(f'{name}_exp{exp + 1}_{time.time()}', generated_texts, references, f'results/NAS_DGPT2/{name}')
 
     # Save hardware metrics
-    save_hardware_metrics_summary(hardware_metrics, 'stat_dumps/distilgpt2/')
+    save_hardware_metrics_summary(hardware_metrics, 'stat_dumps/NAS_DGPT2/')
 
     # Perform statistical tests
     perform_statistical_tests_for_hardware_metrics(hardware_metrics)

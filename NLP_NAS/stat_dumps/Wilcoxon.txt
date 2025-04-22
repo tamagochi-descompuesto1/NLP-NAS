@@ -644,3 +644,156 @@ distilgpt2_12epochs              1391.246600  1530.1817           247.873067    
 distilgpt2_15epochs              1408.138100  1535.7713           515.424767   1082.5900      14.738500  21.4670       90131.319828  152797.261683
 distilgpt2_3epochs               1671.556633  1724.6317         54269.237333  90198.6606      21.414933  27.2660       84218.425667  165456.060600
 distilgpt2_5epochs               1493.902133  1551.0508           326.517167    518.3948      14.877800  17.8169       75496.117328  168707.878783
+
+
+NAS models
+Hardware Metrics Statistical Tests
+
+Time_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=2.5000e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=2.5000e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=2.5000e-01
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+Power_voltage_mV_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=2.5000e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=1.0000, p=5.0000e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=2.5000e-01
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+Power_current_mA_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=2.5000e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=2.0000, p=7.5000e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=2.5000e-01
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+Power_avg_power_mW_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=2.5000e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=1.0000, p=5.0000e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=2.5000e-01
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+Memory_used_KB_delta Comparison:
+/home/israel/.local/lib/python3.8/site-packages/scipy/stats/_morestats.py:3414: UserWarning: Exact p-value calculation does not work if there are zeros. Switching to normal approximation.
+  warnings.warn("Exact p-value calculation does not work if there are "
+/home/israel/.local/lib/python3.8/site-packages/scipy/stats/_morestats.py:3428: UserWarning: Sample size too small for normal approximation.
+  warnings.warn("Sample size too small for normal approximation.")
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=3.1731e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=3.0000, p=1.0000e+00
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=2.5000e-01
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+Memory_total_KB_delta Comparison:
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+Memory_free_KB_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=1.0000, p=6.5472e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=2.5000e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Wilcoxon W=1.0000, p=5.0000e-01
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+Memory_cached_KB_delta Comparison:
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Not enough paired samples.
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=3.1731e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=3.1731e-01
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+Memory_shared_KB_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=3.1731e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=1.0000, p=6.5472e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=3.1731e-01
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+GPU_load_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=1.0000, p=5.0000e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=1.7971e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Wilcoxon W=1.0000, p=6.5472e-01
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+GPU_curr_freq_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=2.5000e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=3.0000, p=1.0000e+00
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=1.7971e-01
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+CPU1_current_freq_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=3.1731e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=3.1731e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+CPU2_current_freq_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=3.1731e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=3.1731e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+CPU3_current_freq_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=3.1731e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=3.1731e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+CPU4_current_freq_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=3.1731e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=3.1731e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+CPU5_current_freq_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=3.1731e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=1.0000, p=6.5472e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=3.1731e-01
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+CPU6_current_freq_delta Comparison:
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_2: Wilcoxon W=0.0000, p=3.1731e-01
+NAS_DGPT2_model_1 vs NAS_DGPT2_model_3: Wilcoxon W=1.0000, p=6.5472e-01
+⚠️ Skipping NAS_DGPT2_model_1 vs NAS_DGPT2_model_4: Not enough paired samples.
+NAS_DGPT2_model_2 vs NAS_DGPT2_model_3: Wilcoxon W=0.0000, p=3.1731e-01
+⚠️ Skipping NAS_DGPT2_model_2 vs NAS_DGPT2_model_4: Not enough paired samples.
+⚠️ Skipping NAS_DGPT2_model_3 vs NAS_DGPT2_model_4: Not enough paired samples.
+
+Performance Metrics Summary:
+                  Power_avg_power_mW_delta             Memory_used_KB_delta                GPU_load_delta            CPU_avg_freq_delta               
+                                      mean         max                 mean            max           mean        max               mean            max
+model                                                                                                                                                 
+NAS_DGPT2_model_1               427.569444  715.041667        284442.666667  853328.000000      21.414352  43.495833      226219.444444  678658.333333
+NAS_DGPT2_model_2                 0.000000    0.000000          3380.000000   10140.000000       2.066667   6.200000           0.000000       0.000000
+NAS_DGPT2_model_3               545.394420  742.300000         20229.208584   25791.492958       3.091039   9.273118       31292.488263   93877.464789
+NAS_DGPT2_model_4               418.323700  441.785141         31567.759036   63135.518072      17.060124  34.120248       84336.225895  168672.451791

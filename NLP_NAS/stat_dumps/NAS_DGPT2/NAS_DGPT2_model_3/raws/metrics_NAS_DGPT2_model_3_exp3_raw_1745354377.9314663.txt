@@ -1,0 +1,17 @@
+Time_delta: 3486.1165978570007
+Power_voltage_mV_delta: 0.0
+Power_current_mA_delta: 132.6
+Power_avg_power_mW_delta: 742.3
+Memory_used_KB_delta: 13608.95
+Memory_total_KB_delta: 0.0
+Memory_free_KB_delta: 22669.65
+Memory_cached_KB_delta: 24.85
+Memory_shared_KB_delta: 0.0
+GPU_load_delta: 0.0
+GPU_curr_freq_delta: 136743.75
+CPU1_current_freq_delta: 0.0
+CPU2_current_freq_delta: 0.0
+CPU3_current_freq_delta: 0.0
+CPU4_current_freq_delta: 0.0
+CPU5_current_freq_delta: 0.0
+CPU6_current_freq_delta: 0.0
