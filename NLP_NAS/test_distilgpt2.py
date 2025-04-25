@@ -3,6 +3,7 @@ import time
 import nltk
 import torch
 import argparse
+import subprocess
 import numpy as np
 
 from tqdm import tqdm
@@ -19,7 +20,7 @@ def cut_text_for_generation(text, cut_percentage=0.3):
     cut_point = int(len(text) * (1 - cut_percentage))
     return text[:cut_point], text[cut_point:]
 
-def generate_text(input_ids, attention_mask, model, tokenizer, temperature=1, top_k=None, top_p=1):
+def generate_text(input_ids, attention_mask, model, tokenizer, num_tokens, temperature=1, top_k=None, top_p=1):
     # Ensure input_ids and attention_mask have compatible dimensions
     if input_ids.dim() != attention_mask.dim():
         attention_mask = attention_mask.unsqueeze(0)  # Adjust dimensions if necessary
@@ -28,7 +29,7 @@ def generate_text(input_ids, attention_mask, model, tokenizer, temperature=1, to
         output = model.generate(
             input_ids, 
             attention_mask=attention_mask, 
-            max_new_tokens=50, 
+            max_new_tokens=num_tokens, 
             num_return_sequences=1, 
             pad_token_id=tokenizer.eos_token_id,
             temperature=temperature,
@@ -61,10 +62,16 @@ def generate_texts(dataset, model, tokenizer, device, temperature=1, top_k=None,
         if input_ids.size(1) == 0 or attention_mask.size(1) == 0:  # Skip empty input cases
             continue
 
+        ref_tokens = tokenizer.tokenize(original_continuation)
+        ref_length = len(ref_tokens)
+
+        approximate_tokens = int(ref_length + np.random.uniform(1.1, 1.2))
+        approximate_tokens = max(10, min(approximate_tokens, 100))
+
         # Generate text using the tokenized incomplete_text
         input_ids = input_ids.to(device)
         attention_mask = attention_mask.to(device)
-        generated_text = generate_text(input_ids, attention_mask, model, tokenizer, temperature, top_k, top_p)
+        generated_text = generate_text(input_ids, attention_mask, model, tokenizer, approximate_tokens, temperature, top_k, top_p)
         
         if generated_text.strip():
             generated_texts.append(generated_text)
@@ -133,6 +140,24 @@ def perform_statistical_tests_for_hardware_metrics(hardware_metrics):
                 except ValueError:
                     print(f"Skipping {model1} vs {model2}: Not enough paired samples for Wilcoxon test.")
 
+def ensure_jtop_service_running():
+    try:
+        # Check service status
+        status_output = subprocess.check_output(['systemctl', 'is-active', 'jtop.service'], text=True).strip()
+        
+        if status_output != 'active':
+            print("⚠️ jtop.service isn't active. Rebooting service...")
+            subprocess.run(['sudo', 'systemctl', 'restart', 'jtop.service'], check=True)
+            time.sleep(5)  # Wait 5 seconds until service reboots
+            print("✅ jtop.service rebooted correctly.")
+        else: 
+            print("✅ jtop.service is active.")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Error verifying or rebooting service: {e}")
+    except Exception as e:
+        print(f"❌ Unexpected error: {e}")
+
+
 def main(num_experiments, use_small_dataset=False, temperature=1, top_k=None, top_p=1):
     # Load models and tokenizer
     print('Loading models...')
@@ -180,6 +205,8 @@ def main(num_experiments, use_small_dataset=False, temperature=1, top_k=None, to
     for exp in range(num_experiments):
         print(f'Experiment {exp + 1}')
         for model, name in zip(models, model_names):
+            ensure_jtop_service_running()
+
             with jtop_stats.JtopStats() as stats:
                 # Start continuous delta calculation in a separate thread
                 delta_thread = Thread(target=stats.calculate_deltas_periodically, args=(30,))
